@@ -21,7 +21,6 @@ import { cn } from '@/lib/utils'
 const Header = () => {
    const [sidebar, setSidebar] = useState<boolean>(false)
    const pathname = usePathname()
-   console.log(pathname)
 
    return (
       <header className="fixed left-0 top-0 z-10 box-border flex h-[70px] w-screen flex-col items-start justify-between gap-4 bg-gradient-to-b from-sky-400 to-sky-600 px-4 pt-4 shadow shadow-[rgba(0,0,0,0.15)] lg:h-fit">

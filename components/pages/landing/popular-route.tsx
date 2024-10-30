@@ -1,29 +1,27 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { formatVND } from '@/lib/utils'
+import { formatDistance, formatTime, formatVND } from '@/lib/utils'
+import { IScheduleGroupByRegion, IScheduleInGroup } from '@/model/schedule'
 import Link from 'next/link'
 import React from 'react'
-
-interface ITrips {
-   destination: string
-   price: number
-   detail: string
-}
 
 interface IPopularRouteCardProps {
    departure: string
    img: string
-   trips: ITrips[]
+   schedule: IScheduleInGroup[]
 }
 
 const PopularRouteCard = ({
-   trips,
+   schedule,
    departure,
    img,
 }: IPopularRouteCardProps) => {
    return (
-      <Link className="flex w-fit min-w-[300px] flex-col items-center justify-center rounded-xl border-2 overflow-hidden border-gray-200 bg-white shadow-lg xl:max-w-[380px]" href={"/lich-trinh"}>
-         <div className="relative w-full rounded-xl overflow-hidden">
+      <Link
+         className="flex w-fit min-w-[300px] flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-gray-200 bg-white shadow-lg xl:max-w-[380px]"
+         href={'/lich-trinh'}
+      >
+         <div className="relative w-full overflow-hidden rounded-xl">
             <img src={img} alt="Thành phố Hồ Chí Minh" />
             <div className="absolute inset-0 bg-black opacity-20"></div>
             <div className="absolute bottom-3 left-3 text-white">
@@ -32,19 +30,20 @@ const PopularRouteCard = ({
             </div>
          </div>
          <div className="flex w-full flex-col">
-            {trips.map((trip) => (
+            {schedule?.map((trip) => (
                <div
                   className="w-full border-b border-gray-100 px-5 py-4"
-                  key={trip.destination}
+                  key={trip.id}
                >
                   <div className="flex items-center justify-between">
                      <h3 className="text-lg capitalize text-teal-700">
-                        {trip.destination}
+                        {trip.regionTo.name}
                      </h3>
                      <h5 className="text-gray-900">{formatVND(trip.price)}</h5>
                   </div>
                   <p className="w-full text-left text-base text-gray-500">
-                     {trip.detail}
+                     {formatDistance(trip.distance)} -{' '}
+                     {formatTime(trip.duration)}
                   </p>
                </div>
             ))}
@@ -53,24 +52,9 @@ const PopularRouteCard = ({
    )
 }
 
-const PopularRoute = () => {
-   const trips = [
-      {
-         destination: 'đà lạt',
-         price: 290000,
-         detail: ' 305km - 8 giờ - 24/10/2024',
-      },
-      {
-         destination: 'đà lạt',
-         price: 290000,
-         detail: ' 305km - 8 giờ - 24/10/2024',
-      },
-      {
-         destination: 'đà lạt',
-         price: 290000,
-         detail: ' 305km - 8 giờ - 24/10/2024',
-      },
-   ]
+const PopularRoute = async ({ data }: { data: IScheduleGroupByRegion[] }) => {
+   // console.log(data)
+
    return (
       <div className="w-full bg-slate-50 py-10">
          <div className="container mx-auto flex flex-col items-center justify-start gap-5 py-10 lg:gap-10">
@@ -83,24 +67,14 @@ const PopularRoute = () => {
                </h4>
             </div>
             <div className="flex h-fit w-full items-center justify-start gap-3 overflow-x-scroll lg:justify-center lg:gap-4 lg:overflow-visible">
-               <PopularRouteCard
-                  trips={trips}
-                  departure="TP Hồ Chí Minh"
-                  img="https://trip.s3-hcm-r1.s3cloud.vn/landing/hcm.png"
-                  key={'hcm'}
-               />
-               <PopularRouteCard
-                  trips={trips}
-                  departure="TP Hồ Chí Minh"
-                  img="https://trip.s3-hcm-r1.s3cloud.vn/landing/dalat.png"
-                  key={'hcm'}
-               />
-               <PopularRouteCard
-                  trips={trips}
-                  departure="TP Hồ Chí Minh"
-                  img="https://trip.s3-hcm-r1.s3cloud.vn/landing/danang.png"
-                  key={'hcm'}
-               />
+               {data.map((schedule) => (
+                  <PopularRouteCard
+                     schedule={schedule.schedules}
+                     departure={schedule.name}
+                     img={`https://trip.s3-hcm-r1.s3cloud.vn/landing/${schedule.slug}.png`}
+                     key={schedule.slug}
+                  />
+               ))}
             </div>
          </div>
       </div>

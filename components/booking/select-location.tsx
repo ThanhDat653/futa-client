@@ -18,6 +18,8 @@ interface ISelectLocationProps {
    label: string
    placeholder: string
    array: IRegion[]
+   value: string
+   handleSelect: (region: string) => void
 }
 
 const SelectLocation = ({
@@ -25,11 +27,21 @@ const SelectLocation = ({
    label,
    name,
    placeholder,
+   handleSelect,
+   value
 }: ISelectLocationProps) => {
    return (
-      <div className='h-fit py-2 w-full'>
-         <Select name={name}>
-            <Label htmlFor={name} className='mb-1 hidden md:block'>{label}</Label>
+      <div className="h-fit w-full py-2">
+         <Select
+            name={name}
+            onValueChange={(value: string) => {
+               handleSelect(value)
+            }}
+            value={value}
+         >
+            <Label htmlFor={name} className="mb-1 hidden md:block">
+               {label}
+            </Label>
             <SelectTrigger className="w-full min-w-[180px]">
                <SelectValue placeholder={placeholder} />
             </SelectTrigger>
@@ -37,7 +49,7 @@ const SelectLocation = ({
                <SelectGroup>
                   <SelectLabel>{label}</SelectLabel>
                   {array.map((region) => (
-                     <SelectItem key={region.id} value={region.id}>
+                     <SelectItem key={region.id} value={region.slug}>
                         {region.name}
                      </SelectItem>
                   ))}

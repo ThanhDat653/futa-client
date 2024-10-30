@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import SelectLocation from './select-location'
 import { IRegion } from '@/model/region'
 import { getRegions } from '@/service/region'
@@ -9,17 +10,83 @@ import TripTypeSelector from './trip-type-selector.'
 import { DatePicker } from './date-picker.'
 import { Label } from '../ui/label'
 import { Input } from '../ui/input'
+import { formatDate, parseDateFromParams } from '@/lib/utils'
+import { useRouter, useSearchParams } from 'next/navigation'
+export type TTripType = 'oneWay' | 'roundTrip'
 
+// Lấy các query từ URL
 const QuickBooking = ({ data }: { data: IRegion[] }) => {
+   const router = useRouter()
+   const searchParams = useSearchParams()
+
+   // Extract query parameters from URL
+   const from = searchParams.get('from')
+   const fromTime = searchParams.get('fromTime')
+   const to = searchParams.get('to')
+   const toTime = searchParams.get('toTime')
+   const ticketCount = searchParams.get('ticketCount')
+   const type = searchParams.get('type')
+
+   // State lưu trữ thông tin form
+   const [tripType, setTripType] = useState<TTripType>('oneWay')
+   const [departure, setDeparture] = useState<string>('')
+   const [destination, setDestination] = useState('')
+   const [fromTimeState, setFromTimeState] = useState<Date>(new Date())
+   const [toTimeState, setToTimeState] = useState<Date>(new Date())
+   const [quantity, setQuantity] = useState(1)
+
+   const handleSelectTripType = (type: TTripType) => {
+      setTripType(type)
+   }
+
+   const handleSelectDeparture = (date: string) => {
+      setDeparture(date)
+   }
+
+   const handleSelectDestination = (date: string) => {
+      setDestination(date)
+   }
+
+   const swapLocations = () => {
+      setDeparture(destination)
+      setDestination(departure)
+   }
+
+   // Hàm xử lý khi bấm nút "Tìm chuyến xe"
+   const handleSearch = () => {
+      const query = {
+         from: departure,
+         fromTime: formatDate(String(fromTimeState)),
+         to: destination,
+         toTime: formatDate(String(toTimeState)),
+         ticketCount: String(quantity),
+         type: tripType,
+      }
+
+      router.push(`/dat-ve?${new URLSearchParams(query).toString()}`)
+   }
+
+   useEffect(() => {
+      setTripType((type as TTripType) || 'oneWay')
+      setDeparture(from || '')
+      setDestination(to || '')
+      setFromTimeState(fromTime ? parseDateFromParams(fromTime) : new Date())
+      setToTimeState(toTime ? parseDateFromParams(toTime) : new Date())
+      setQuantity(ticketCount ? Number(ticketCount) : 1)
+   }, [from, fromTime, to, toTime, ticketCount, type])
+
    return (
       <div className="w-full px-2 py-10">
          <div className="container mx-auto flex flex-col items-start justify-start gap-5 rounded-xl border-2 border-sky-500 pb-10 shadow ring-8 ring-sky-100 lg:gap-10">
             <div className="hidden w-full overflow-hidden rounded-xl border-2 border-gray-200 shadow md:block">
                <img src="/banner.png" alt="23 năm vững tin và phát triển" />
             </div>
-            <div className="flex w-full flex-col relative">
-               <TripTypeSelector />
-               <div className="flex h-full w-full items-center gap-2 border-b px-5 py-4">
+            <div className="relative flex w-full flex-col">
+               <TripTypeSelector
+                  tripType={tripType}
+                  setTripType={handleSelectTripType}
+               />
+               <div className="flex h-full w-full items-center gap-2 border-b px-5 py-4 md:px-10">
                   <div className="flex h-[112px] flex-col items-center justify-between py-4 md:hidden">
                      <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -71,16 +138,19 @@ const QuickBooking = ({ data }: { data: IRegion[] }) => {
                         name="departure"
                         placeholder="Chọn điểm đi"
                         array={data}
+                        handleSelect={handleSelectDeparture}
+                        value={departure}
                      />
                      <button
                         className="mt-4 hidden md:block"
                         title="Đảo ngược điểm đi và điểm đến"
+                        onClick={swapLocations}
                      >
                         <svg
                            xmlns="http://www.w3.org/2000/svg"
                            viewBox="0 0 24 24"
                            fill="none"
-                           className="size-10 rounded-full bg-white stroke-sky-600 p-2 shadow-md"
+                           className="size-10 rounded-full bg-white stroke-sky-600 p-2 shadow-md transition-transform duration-500 hover:rotate-180"
                            strokeLinecap="round"
                            strokeLinejoin="round"
                            strokeWidth={2}
@@ -94,6 +164,8 @@ const QuickBooking = ({ data }: { data: IRegion[] }) => {
                         name="destination"
                         placeholder="Chọn điểm đến"
                         array={data}
+                        handleSelect={handleSelectDestination}
+                        value={destination}
                      />
                   </div>
                   {/* Mobile swap button*/}
@@ -101,12 +173,13 @@ const QuickBooking = ({ data }: { data: IRegion[] }) => {
                      <button
                         className="ml-1 sm:ml-2"
                         title="Đảo ngược điểm đi và điểm đến"
+                        onClick={swapLocations}
                      >
                         <svg
                            xmlns="http://www.w3.org/2000/svg"
                            viewBox="0 0 24 24"
                            fill="none"
-                           className="size-6 stroke-gray-800 sm:size-7"
+                           className="size-6 stroke-gray-800 transition-transform duration-500 hover:rotate-180 sm:size-7"
                            strokeLinecap="round"
                            strokeLinejoin="round"
                            width={24}
@@ -122,16 +195,39 @@ const QuickBooking = ({ data }: { data: IRegion[] }) => {
                      </button>
                   </div>
                </div>
-               <div className="flex h-full w-full flex-col items-center gap-2 border-b px-5 py-4 md:flex-row">
-                  <DatePicker label="Ngày đi" />
-                  <DatePicker label="Ngày về" />
-                  <div className="w-full md:w-fit flex flex-col justify-start items-start gap-1 h-full">
-                     <Label htmlFor="quantity" className='leading-5'>Số vé</Label>
-                     <Input id="quantity" type="number" min={1} defaultValue={1}/>
+               <div className="flex h-full w-full flex-col items-center gap-2 px-5 py-5 md:flex-row md:px-10">
+                  <DatePicker
+                     label="Ngày đi"
+                     date={fromTimeState}
+                     handleSelect={(date) => setFromTimeState(date as Date)}
+                  />
+                  {tripType === 'roundTrip' && toTimeState !== undefined && (
+                     <DatePicker
+                        label="Ngày về"
+                        date={toTimeState}
+                        handleSelect={(date) => setToTimeState(date as Date)}
+                     />
+                  )}
+                  <div className="flex h-full w-full flex-col items-start justify-start gap-1 md:w-fit">
+                     <Label htmlFor="quantity" className="leading-5">
+                        Số vé
+                     </Label>
+                     <Input
+                        id="quantity"
+                        type="number"
+                        min={1}
+                        value={quantity}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                           setQuantity(parseInt(e.target.value))
+                        }
+                     />
                   </div>
                </div>
-               <div className='absolute top-[103%] w-full flex justify-center'>
-                  <button className='bg-blue-600 px-16 py-3 text-white rounded-full'>
+               <div className="absolute top-[103%] flex w-full justify-center sm:top-[105%] lg:top-[106%]">
+                  <button
+                     className="rounded-full bg-blue-600 px-16 py-3 text-white"
+                     onClick={handleSearch}
+                  >
                      Tìm chuyến xe
                   </button>
                </div>
