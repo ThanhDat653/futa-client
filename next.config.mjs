@@ -2,6 +2,7 @@
 import './env.mjs'
 
 const nextConfig = {
+    output: 'standalone',
     images: {
         remotePatterns: [
             {
