@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { formatDistance, formatTime, formatVND } from '@/lib/utils'
+import { formatDistance, formatDuration, formatVND } from '@/lib/utils'
 import { IScheduleGroupByRegion, IScheduleInGroup } from '@/model/schedule'
 import Link from 'next/link'
 import React from 'react'
@@ -43,7 +43,7 @@ const PopularRouteCard = ({
                   </div>
                   <p className="w-full text-left text-base text-gray-500">
                      {formatDistance(trip.distance)} -{' '}
-                     {formatTime(trip.duration)}
+                     {formatDuration(trip.duration)}
                   </p>
                </div>
             ))}

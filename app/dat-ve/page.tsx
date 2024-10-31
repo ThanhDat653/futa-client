@@ -7,8 +7,7 @@ import Trips from '@/components/pages/booking/trips'
 import { convertToString, formatDateToYYYYMMDD } from '@/lib/utils'
 import { getRegions } from '@/service/region'
 import { getTripByFromToDate } from '@/service/trips'
-import { useRouter } from 'next/router'
-import React from 'react'
+import React, { Suspense } from 'react'
 
 export default async function page({
    searchParams,
@@ -35,9 +34,12 @@ export default async function page({
 
    return (
       <div className="mt-[120px] w-full">
-         <QuickBooking data={region} />
+
+         <Suspense>
+            <QuickBooking data={region} />
+         </Suspense>
          <div className="w-full bg-slate-50 py-10">
-            <div className="container mx-auto w-full grid-cols-4 bg-slate-50 md:grid md:gap-5">
+            <div className="container mx-auto w-full md:grid-cols-4 lg:grid-cols-3 bg-slate-50 md:grid md:gap-5">
                <div className="col-span-1 h-full bg-white shadow-xl"></div>
                {trips && <Trips data={trips} />}
             </div>
