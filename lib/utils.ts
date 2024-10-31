@@ -47,7 +47,7 @@ export function formatDistance(distance: number): string {
    return Math.round(distance) + 'km'
 }
 
-export function formatTime(minutes: number): string {
+export function formatDuration(minutes: number): string {
    const hours = Math.floor(minutes / 60)
    const remainingMinutes = minutes % 60
 
@@ -56,6 +56,16 @@ export function formatTime(minutes: number): string {
    }
 
    return `${hours} giờ ${remainingMinutes} phút`
+}
+
+export function formatTime(dateTimeString: string): string {
+   const date = new Date(dateTimeString)
+
+   // Lấy giờ và phút, sau đó thêm số 0 phía trước nếu nhỏ hơn 10
+   const hours = date.getHours().toString().padStart(2, '0')
+   const minutes = date.getMinutes().toString().padStart(2, '0')
+
+   return `${hours}:${minutes}`
 }
 
 export const convertToString = (
