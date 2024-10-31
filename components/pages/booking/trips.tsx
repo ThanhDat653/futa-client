@@ -1,4 +1,22 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { IRegion } from '@/model/region'
+import { IScheduleTrip } from '@/model/schedule'
+import { ILocation } from '@/model/trips'
 import React from 'react'
+
+interface ITripCardProps {
+   regionFrom: IRegion
+   regionTo: IRegion
+   from: ILocation
+   to: ILocation
+   duration: number
+   distance: number
+   id: string
+   startTime: string
+   endTime: string
+   seatsAvailable: number
+   price: number
+}
 
 const TripCard = () => {
    return (
@@ -8,10 +26,17 @@ const TripCard = () => {
    )
 }
 
-const Trips = () => {
+const Trips = ({ data }: { data: IScheduleTrip }) => {
    return (
-      <div className="w-full bg-slate-50 py-10">
-         <div className="container mx-auto flex flex-col items-center justify-start gap-5 py-10 lg:gap-10">
+      <div className="md:col-span-3">
+         <div className="w-full">
+            <h3 className="text-lg">
+               {data.regionFrom.name} - {data.regionTo.name} (
+               {data.trips.length})
+            </h3>
+         </div>
+         <div className="flex flex-col items-center justify-start gap-5 py-10 lg:gap-10">
+            <TripCard />
             <TripCard />
          </div>
       </div>
