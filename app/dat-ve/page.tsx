@@ -33,12 +33,15 @@ export default async function page({
       ticket
    )
 
-   console.log(trips)
-
    return (
       <div className="mt-[120px] w-full">
          <QuickBooking data={region} />
-         <Trips />
+         <div className="w-full bg-slate-50 py-10">
+            <div className="container mx-auto w-full grid-cols-4 bg-slate-50 md:grid md:gap-5">
+               <div className="col-span-1 h-full bg-white shadow-xl"></div>
+               {trips && <Trips data={trips} />}
+            </div>
+         </div>
       </div>
    )
 }
