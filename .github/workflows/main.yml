@@ -1,0 +1,26 @@
+name: Futa client deployment
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy using SSH key
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.VPS_NAME }}
+          key: ${{ secrets.VPS_KEY }}
+          port: 22
+          script: |
+            cd /home/futa-client
+            git fetch origin
+            git checkout main
+            git pull
+            docker-compose down
+            docker-compose up -d --build
