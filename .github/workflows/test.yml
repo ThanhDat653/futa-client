@@ -1,0 +1,32 @@
+name: Test Next.js Application
+
+on:
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      # Kiểm tra mã nguồn
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      # Cài đặt Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '19'
+
+      # Cài đặt dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Build ứng dụng Next.js
+      - name: Build the Next.js app
+        run: npm run build
+
+      # Chạy các bài test
+      - name: Run tests
+        run: npm test
