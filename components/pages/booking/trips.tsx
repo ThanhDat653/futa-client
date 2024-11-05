@@ -92,7 +92,7 @@ const TripCard = ({
                </h3>
             </div>
          </div>
-         <div className="flex w-full items-center justify-between py-4">
+         <div className="flex w-full items-center justify-between pt-4">
             <div className="flex flex-1 items-center justify-start gap-5 md:gap-10">
                <span className="block text-teal-700">
                   {trip.seatsAvailable} ghế trống
@@ -128,6 +128,11 @@ const Trips = ({ data }: { data: IScheduleTrip }) => {
                {data.trips.length})
             </h3>
          </div>
+
+         <div className="flex w-full">
+                  
+         </div>
+
          <div className="flex flex-col items-center justify-start gap-2 py-5">
             {data.trips.map((trip) => (
                <TripCard

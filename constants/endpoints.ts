@@ -15,4 +15,7 @@ export const END_POINTS = {
       POPULAR: `schedules/popular`,
       BY_FROMTODATE: `trips`,
    },
+   VEHICLE: {
+      TYPE: `vtypes`,
+   },
 }

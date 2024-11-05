@@ -8,14 +8,20 @@ async function getTripByFromToDate(
    from: string,
    to: string,
    fromDate: string,
-   ticketCount: number
+   ticketCount: string,
+   vehicleType: string = '',
+   timeInDay: string = '',
+   floorNo: string = ''
 ) {
    // Construct query string with parameters
    const queryParams = new URLSearchParams({
       from,
       to,
       fromDate,
-      ticketCount: ticketCount.toString(),
+      ticketCount,
+      vehicleType: vehicleType,
+      timeInDay: timeInDay,
+      floorNo: floorNo,
    }).toString()
 
    try {
