@@ -14,7 +14,7 @@ export const Page = async ({
 }) => {
    const vehicle = await getVehicleType()
 
-   return <Filter data={vehicle} />
+   return <Filter data={vehicle} {...searchParams}/>
 }
 
 export default Page

@@ -1,14 +1,16 @@
+import Trips from '@/components/pages/booking/trips'
 import { formatDateToYYYYMMDD } from '@/lib/utils'
 import { getTripByFromToDate } from '@/service/trips'
 import React from 'react'
 
-const page = async ({
+// type TType = 'departure' | 'destination'
+
+const Page = async ({
    searchParams,
 }: {
    searchParams: {
       from: string
       to: string
-      toTime: string
       fromTime: string
       ticketCount: string
       timeInDay: string
@@ -17,10 +19,9 @@ const page = async ({
       type: string
    }
 }) => {
-   const { from, to, fromTime, ticketCount, timeInDay, floorNo, vehicleType } =
+   const { from, to, fromTime, ticketCount, vehicleType, timeInDay, floorNo } =
       searchParams
 
-   console.log(fromTime)
    const data = await getTripByFromToDate(
       from,
       to,
@@ -31,14 +32,11 @@ const page = async ({
       floorNo
    )
 
-   return (
-      <div className="w-full">
-         <h3 className="text-lg font-medium">
-            {data?.regionFrom.name} - {data?.regionTo.name} (
-            {data?.trips.length})
-         </h3>
-      </div>
+   return data ? (
+      <Trips data={data} />
+   ) : (
+      <h3>Không tìm thấy chuyến xe phù hợp.</h3>
    )
 }
 
-export default page
+export default Page

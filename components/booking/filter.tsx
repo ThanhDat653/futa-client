@@ -7,12 +7,28 @@ import { departureTime } from '@/model/trips'
 import FilterGroup from './filter-group'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-const Filter = ({ data }: { data: IVehicle[] }) => {
+const Filter = ({
+   data,
+   floorNo,
+   timeInDay,
+   vehicleType,
+}: {
+   data: IVehicle[]
+   timeInDay: string
+   vehicleType: string
+   floorNo: string
+}) => {
+   const router = useRouter()
    const searchParams = useSearchParams()
+   const params = new URLSearchParams(searchParams.toString())
 
-   const timeInDay = searchParams.get('timeInDay') || ''
-   const vehicleType = searchParams.get('vehicleType') || ''
-   const floorNo = searchParams.get('floorNo') || ''
+   const removeFilter = () => {
+      params.delete('timeInDay')
+      params.delete('vehicleType')
+      params.delete('floorNo')
+
+      router.push(`?${params.toString()}`)
+   }
 
    return (
       <aside className="col-span-1 hidden h-fit flex-col items-start justify-start rounded-lg bg-white shadow-md lg:flex">
@@ -20,7 +36,10 @@ const Filter = ({ data }: { data: IVehicle[] }) => {
             <h1 className="text-lg font-medium text-gray-800">
                Bộ lọc tìm kiếm
             </h1>
-            <div className="flex cursor-pointer items-center gap-1 rounded-md px-2 lg:hover:bg-red-50">
+            <div
+               className="flex cursor-pointer items-center gap-1 rounded-md px-2 lg:hover:bg-red-50"
+               onClick={() => removeFilter()}
+            >
                <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"

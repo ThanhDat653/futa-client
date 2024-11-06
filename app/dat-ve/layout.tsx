@@ -14,6 +14,7 @@ export default function Layout({
    tripList: React.ReactNode
 }) {
    return (
+      
       <div className="mt-[120px] w-full">
          {quickBooking}
          <div className="w-full bg-slate-50 py-10">

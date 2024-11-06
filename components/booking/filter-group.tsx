@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 import { IFloor } from '@/model/seat'
@@ -34,8 +33,13 @@ const FilterGroup: React.FC<IFilterGroupProps> = ({
       } else {
          params.delete(paramName)
       }
+
+      console.log('====================================')
+      console.log(params)
+      console.log('====================================')
+
       router.push(`?${params.toString()}`)
-   }, [paramName, router, searchParams, currentOptions])
+   }, [router,searchParams, currentOptions, paramName])
 
    const toggleOption = (opt: string) => {
       setCurrentOptions((prev) =>
