@@ -1,4 +1,7 @@
+'use client'
+
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { useBooking } from '@/context/booking-context'
 import {
    formatDistance,
    formatDuration,
@@ -17,6 +20,7 @@ interface ITripCardProps {
    distance: number
    vehicle: string
    trip: ITrip
+   onSelect: (ticketId: string) => void
 }
 
 const TripCard = ({
@@ -26,6 +30,7 @@ const TripCard = ({
    to,
    vehicle,
    trip,
+   onSelect,
 }: ITripCardProps) => {
    return (
       <div
@@ -92,7 +97,7 @@ const TripCard = ({
                </h3>
             </div>
          </div>
-         <div className="flex w-full items-center justify-between py-4">
+         <div className="flex w-full items-center justify-between pt-4">
             <div className="flex flex-1 items-center justify-start gap-5 md:gap-10">
                <span className="block text-teal-700">
                   {trip.seatsAvailable} ghế trống
@@ -105,14 +110,20 @@ const TripCard = ({
                {formatVND(trip.price)}
             </span>
             <div className="hidden flex-col justify-center md:flex">
-               <button className="rounded-full bg-orange-100 px-10 py-2 text-sm leading-5 text-orange-700 transition-all duration-200 hover:bg-orange-600 hover:text-white">
-                  Mua vé
+               <button
+                  onClick={() => onSelect(trip.id)}
+                  className="rounded-full bg-orange-100 px-10 py-2 text-sm leading-5 text-orange-700 transition-all duration-200 hover:bg-orange-600 hover:text-white"
+               >
+                  Chọn chuyến
                </button>
             </div>
          </div>
          <div className="flex w-full items-center justify-center md:hidden">
-            <button className="mx-auto w-full rounded bg-orange-100 py-2 text-orange-600">
-               Mua vé
+            <button
+               className="mx-auto w-full rounded bg-orange-100 py-2 text-orange-600"
+               onClick={() => onSelect(trip.id)}
+            >
+               Chọn chuyến
             </button>
          </div>
       </div>
@@ -120,27 +131,33 @@ const TripCard = ({
 }
 
 const Trips = ({ data }: { data: IScheduleTrip }) => {
+   const { ticket, setTicket } = useBooking()
+
+   const updateTicket = (ticketId: string) => {
+      setTicket((prevTickets) => [
+         ...prevTickets,
+         { ticketId: ticketId, seats: [] },
+      ])
+   }
+
+   console.log('====================================')
+   console.log(ticket)
+   console.log('====================================')
+
    return (
-      <div className="px-4 sm:px-0 md:col-span-3 lg:col-span-2">
-         <div className="w-full">
-            <h3 className="text-lg font-medium">
-               {data.regionFrom.name} - {data.regionTo.name} (
-               {data.trips.length})
-            </h3>
-         </div>
-         <div className="flex flex-col items-center justify-start gap-2 py-5">
-            {data.trips.map((trip) => (
-               <TripCard
-                  vehicle={data.vehicleTypeName}
-                  distance={data.distance}
-                  duration={data.duration}
-                  trip={trip}
-                  from={data.from}
-                  to={data.to}
-                  key={trip.id}
-               />
-            ))}
-         </div>
+      <div className="flex flex-col items-center justify-start gap-2 py-5">
+         {data.trips.map((trip) => (
+            <TripCard
+               vehicle={data.vehicleTypeName}
+               distance={data.distance}
+               duration={data.duration}
+               trip={trip}
+               from={data.from}
+               to={data.to}
+               key={trip.id}
+               onSelect={updateTicket}
+            />
+         ))}
       </div>
    )
 }

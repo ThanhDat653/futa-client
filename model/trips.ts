@@ -1,5 +1,29 @@
 import { IScheduleDetail } from './schedule'
 
+export interface IDepartureTime {
+   id: string
+   name: string
+}
+
+export const departureTime: IDepartureTime[] = [
+   {
+      id: 'morning',
+      name: '06:00 - 12:00',
+   },
+   {
+      id: 'afternoon',
+      name: '12:00 - 18:00',
+   },
+   {
+      id: 'evening',
+      name: '18:00 - 24:00',
+   },
+   {
+      id: 'night',
+      name: '00:00 - 06:00',
+   },
+]
+
 export interface ISeat {
    id: number
    rowNo: number

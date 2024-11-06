@@ -5,7 +5,6 @@
 import React, { ChangeEvent, useEffect, useState } from 'react'
 import SelectLocation from './select-location'
 import { IRegion } from '@/model/region'
-import { getRegions } from '@/service/region'
 import TripTypeSelector from './trip-type-selector.'
 import { DatePicker } from './date-picker.'
 import { Label } from '../ui/label'
@@ -15,17 +14,24 @@ import { useRouter, useSearchParams } from 'next/navigation'
 export type TTripType = 'oneWay' | 'roundTrip'
 
 // Lấy các query từ URL
-const QuickBooking = ({ data }: { data: IRegion[] }) => {
+const QuickBooking = ({
+   data,
+   from,
+   fromTime,
+   to,
+   toTime,
+   ticketCount,
+   type,
+}: {
+   data: IRegion[]
+   from: string
+   fromTime: string
+   to: string
+   toTime: string
+   ticketCount: string
+   type: TTripType
+}) => {
    const router = useRouter()
-   const searchParams = useSearchParams()
-
-   // Extract query parameters from URL
-   const from = searchParams.get('from')
-   const fromTime = searchParams.get('fromTime')
-   const to = searchParams.get('to')
-   const toTime = searchParams.get('toTime')
-   const ticketCount = searchParams.get('ticketCount')
-   const type = searchParams.get('type')
 
    // State lưu trữ thông tin form
    const [tripType, setTripType] = useState<TTripType>('oneWay')
@@ -33,7 +39,7 @@ const QuickBooking = ({ data }: { data: IRegion[] }) => {
    const [destination, setDestination] = useState('')
    const [fromTimeState, setFromTimeState] = useState<Date>(new Date())
    const [toTimeState, setToTimeState] = useState<Date>(new Date())
-   const [quantity, setQuantity] = useState(1)
+   const [quantity, setQuantity] = useState<number>(1)
 
    const handleSelectTripType = (type: TTripType) => {
       setTripType(type)
