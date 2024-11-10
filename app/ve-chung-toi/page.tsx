@@ -3,7 +3,7 @@ import React from 'react'
 
 function Page() {
     return (
-        <div className="container mx-auto bg-white px-4 py-10 text-black xl:px-0">
+        <div className="container mx-auto bg-white px-4 py-40 text-black xl:px-0">
             <div className="flex flex-col text-base">
                 <div className="">
                     <h1 className="mb-4 text-center text-2xl font-semibold text-blue-500 md:text-4xl">

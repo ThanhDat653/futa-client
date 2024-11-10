@@ -4,10 +4,6 @@ export const MAIN_NAVIGATION = [
       name: 'Trang chủ',
    },
    {
-      href: '/dang-nhap',
-      name: 'Đăng nhập/Đăng ký',
-   },
-   {
       href: '/lich-trinh',
       name: 'Lịch trình',
    },

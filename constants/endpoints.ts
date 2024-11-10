@@ -18,4 +18,15 @@ export const END_POINTS = {
    VEHICLE: {
       TYPE: `vtypes`,
    },
+   PROFILE: {
+      URl: `profiles`,
+      CHILD: {
+         INFO: `info`,
+         REGISTER: `register`
+      }
+   },
+   AUTH: {
+      LOGOUT: `logout`,
+      TOKEN: `oauth2/token`
+   }
 }
