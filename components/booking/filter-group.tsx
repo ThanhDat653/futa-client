@@ -33,13 +33,8 @@ const FilterGroup: React.FC<IFilterGroupProps> = ({
       } else {
          params.delete(paramName)
       }
-
-      console.log('====================================')
-      console.log(params)
-      console.log('====================================')
-
       router.push(`?${params.toString()}`)
-   }, [router,searchParams, currentOptions, paramName])
+   }, [router, searchParams, currentOptions, paramName])
 
    const toggleOption = (opt: string) => {
       setCurrentOptions((prev) =>
@@ -53,7 +48,7 @@ const FilterGroup: React.FC<IFilterGroupProps> = ({
       <div className="flex w-full flex-col gap-4 border-b p-5">
          <h3 className="font-medium text-gray-800">{title}</h3>
          <div className="flex flex-wrap gap-2 pl-2">
-            {options.map((option) => (
+            {options?.map((option) => (
                <div className="flex items-center space-x-2" key={option.id}>
                   <button
                      onClick={() => toggleOption(option.id.toString())}

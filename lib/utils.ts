@@ -14,15 +14,18 @@ export function formatDate(input: string | number): string {
    })
 }
 
-export const parseDateFromParams = (dateString: string) => {
-   // Decode the URL-encoded string
-   const decodedDate = decodeURIComponent(dateString)
+export const parseDateFromParams = (dateString: string | null) => {
+   if (dateString) {
+      // Decode the URL-encoded string
+      const decodedDate = decodeURIComponent(dateString)
 
-   // Split into day, month, and year
-   const [day, month, year] = decodedDate.split('/').map(Number)
+      // Split into day, month, and year
+      const [day, month, year] = decodedDate.split('/').map(Number)
 
-   // Create a new Date object with month - 1 (since JavaScript months are 0-indexed)
-   return new Date(year, month - 1, day)
+      // Create a new Date object with month - 1 (since JavaScript months are 0-indexed)
+      return new Date(year, month - 1, day)
+   }
+   return new Date()
 }
 
 export const formatDateToYYYYMMDD = (dateString: string): string => {

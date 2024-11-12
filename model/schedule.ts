@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { IRegion } from './region'
 import { ILocation, ITrip, IVehicleInfo } from './trips'
 
@@ -17,7 +18,7 @@ export interface IScheduleDetail extends IVehicleInfo, ISchedule {
    pickUps: ILocation[]
    transits: ILocation[]
 }
-   
+
 // Get trips by from, to, date.
 export interface IScheduleTrip extends ISchedule {
    trips: ITrip[]

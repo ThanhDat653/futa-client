@@ -1,34 +1,33 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 import { IVehicle } from '@/model/vehicle'
-import React, { useCallback, useState } from 'react'
+import React, { memo, useCallback, useState } from 'react'
 import { floor } from '@/model/seat'
 import { departureTime } from '@/model/trips'
 import FilterGroup from './filter-group'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-const Filter = ({
-   data,
-   floorNo,
-   timeInDay,
-   vehicleType,
-}: {
-   data: IVehicle[]
-   timeInDay: string
-   vehicleType: string
-   floorNo: string
-}) => {
+const Filter = ({ data }: { data: IVehicle[] }) => {
    const router = useRouter()
    const searchParams = useSearchParams()
-   const params = new URLSearchParams(searchParams.toString())
+   const params = {
+      timeInDay: searchParams.get('timeInDay') || '',
+      floorNo: searchParams.get('floorNo') || '',
+      vehicleType: searchParams.get('vehicleType') || '',
+   }
+   const { floorNo, timeInDay, vehicleType } = params
+
+   const filterParams = new URLSearchParams(searchParams.toString())
 
    const removeFilter = () => {
-      params.delete('timeInDay')
-      params.delete('vehicleType')
-      params.delete('floorNo')
+      filterParams.delete('timeInDay')
+      filterParams.delete('vehicleType')
+      filterParams.delete('floorNo')
 
-      router.push(`?${params.toString()}`)
+      router.push(`?${filterParams.toString()}`)
    }
+
+   console.log('filter')
 
    return (
       <aside className="col-span-1 hidden h-fit flex-col items-start justify-start rounded-lg bg-white shadow-md lg:flex">
@@ -88,4 +87,4 @@ const Filter = ({
    )
 }
 
-export default Filter
+export default memo(Filter)
