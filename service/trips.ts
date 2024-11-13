@@ -1,6 +1,7 @@
 /* eslint-disable prefer-const */
 import { END_POINTS } from '@/constants/endpoints'
 import { IScheduleGroupByRegion, IScheduleTrip } from '@/model/schedule'
+import { ITripDetail } from '@/model/trips'
 import { notFound } from 'next/navigation'
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -25,9 +26,6 @@ async function getTripByFromToDate(
    }).toString()
 
    try {
-      console.log(
-         `${process.env.NEXT_PUBLIC_FUTA_API_URL}/${END_POINTS.TRIP.BY_FROMTODATE}?${queryParams}`
-      )
       const res = await fetch(
          `${process.env.NEXT_PUBLIC_FUTA_API_URL}/${END_POINTS.TRIP.BY_FROMTODATE}?${queryParams}`
       )
@@ -75,4 +73,20 @@ async function getPopularTrips(): Promise<IScheduleGroupByRegion[]> {
    }
 }
 
-export { getTripByFromToDate, getPopularTrips }
+async function getTripDetail(id: string): Promise<ITripDetail> {
+   const res = await fetch(
+      `${process.env.NEXT_PUBLIC_FUTA_API_URL}/${END_POINTS.TRIP.DETAIL(id)}`
+   )
+
+   if (!res.ok) {
+      throw new Error(`Error: ${res.status}`)
+   }
+
+   const result = await res.json()
+
+   const trip: ITripDetail = result
+
+   return trip
+}
+
+export { getTripByFromToDate, getPopularTrips, getTripDetail }

@@ -21,7 +21,6 @@ interface IPickerProps {
 }
 
 export function DatePicker({ label, date, handleSelect }: IPickerProps) {
-
    return (
       <div className="flex w-full flex-col items-start justify-start gap-1">
          <span className="text-sm">{label}</span>
@@ -42,9 +41,10 @@ export function DatePicker({ label, date, handleSelect }: IPickerProps) {
                <Calendar
                   mode="single"
                   selected={date}
-                  onSelect={handleSelect}
+                  // onSelect={handleSelect}
+                  onDayClick={handleSelect}
                   initialFocus
-                  disabled={(Date)=> isBefore(Date, startOfToday())}
+                  disabled={(Date) => isBefore(Date, startOfToday())}
                />
             </PopoverContent>
          </Popover>

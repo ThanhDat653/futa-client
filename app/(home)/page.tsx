@@ -13,9 +13,7 @@ const page = async () => {
 
    return (
       <div className="mt-[120px] w-full">
-         <Suspense>
-            <QuickBooking data={region} from={''} fromTime={''} to={''} toTime={''} ticketCount={''} type={'oneWay'} />
-         </Suspense>
+         <QuickBooking data={region} />
          <PopularRoute data={popularTrips} />
          <Achievement />
       </div>

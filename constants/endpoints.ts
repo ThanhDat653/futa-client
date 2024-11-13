@@ -4,6 +4,7 @@ export const PARAMS = {
    TO: ':to',
    DATE: ':date',
    TICKET: ':ticketCount',
+   ID: ':id',
 }
 
 export const END_POINTS = {
@@ -14,6 +15,7 @@ export const END_POINTS = {
    TRIP: {
       POPULAR: `schedules/popular`,
       BY_FROMTODATE: `trips`,
+      DETAIL:(id:string)=> `trips/${id}`,
    },
    VEHICLE: {
       TYPE: `vtypes`,

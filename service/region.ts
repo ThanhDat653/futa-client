@@ -1,7 +1,6 @@
 /* eslint-disable prefer-const */
 import { END_POINTS } from '@/constants/endpoints'
 import { IRegion } from '@/model/region'
-import { notFound } from 'next/navigation'
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 async function getRegions() {
@@ -10,7 +9,6 @@ async function getRegions() {
    )
    let result = await res.json()
    let regions: IRegion[] = result.data
-   if (!regions) notFound()
 
    return regions
 }

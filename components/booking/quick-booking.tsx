@@ -2,7 +2,13 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, {
+   ChangeEvent,
+   memo,
+   useCallback,
+   useEffect,
+   useState,
+} from 'react'
 import SelectLocation from './select-location'
 import { IRegion } from '@/model/region'
 import TripTypeSelector from './trip-type-selector.'
@@ -14,43 +20,42 @@ import { useRouter, useSearchParams } from 'next/navigation'
 export type TTripType = 'oneWay' | 'roundTrip'
 
 // Lấy các query từ URL
-const QuickBooking = ({
-   data,
-   from,
-   fromTime,
-   to,
-   toTime,
-   ticketCount,
-   type,
-}: {
-   data: IRegion[]
-   from: string
-   fromTime: string
-   to: string
-   toTime: string
-   ticketCount: string
-   type: TTripType
-}) => {
+const QuickBooking = ({ data }: { data: IRegion[] }) => {
    const router = useRouter()
+   const searchParams = useSearchParams()
 
    // State lưu trữ thông tin form
-   const [tripType, setTripType] = useState<TTripType>('oneWay')
-   const [departure, setDeparture] = useState<string>('')
-   const [destination, setDestination] = useState('')
-   const [fromTimeState, setFromTimeState] = useState<Date>(new Date())
-   const [toTimeState, setToTimeState] = useState<Date>(new Date())
-   const [quantity, setQuantity] = useState<number>(1)
+   const [tripType, setTripType] = useState<TTripType>(
+      (searchParams.get('type') as TTripType) || 'oneWay'
+   )
+   const [departure, setDeparture] = useState<string>(
+      searchParams.get('from') || ''
+   )
+   const [destination, setDestination] = useState(searchParams.get('to') || '')
+   const [fromTimeState, setFromTimeState] = useState<Date>(
+      parseDateFromParams(searchParams.get('fromTime')) ?? new Date()
+   )
+   const [toTimeState, setToTimeState] = useState<Date>(
+      parseDateFromParams(searchParams.get('toTime')) ?? new Date()
+   )
+   const [quantity, setQuantity] = useState<number>(
+      Number(searchParams.get('ticketCount')) || 1
+   )
 
    const handleSelectTripType = (type: TTripType) => {
       setTripType(type)
    }
 
-   const handleSelectDeparture = (date: string) => {
-      setDeparture(date)
+   const handleSelectDeparture = (d: string) => {
+      setDeparture(d)
    }
 
-   const handleSelectDestination = (date: string) => {
-      setDestination(date)
+   const handleSelectDestination = (d: string) => {
+      setDestination(d)
+   }
+
+   const handleSelectDepartureTime = (d: Date) => {
+      setFromTimeState(d)
    }
 
    const swapLocations = () => {
@@ -69,17 +74,12 @@ const QuickBooking = ({
          type: tripType,
       }
 
-      router.push(`/dat-ve?${new URLSearchParams(query).toString()}`)
-   }
+      const searchParams = new URLSearchParams(query).toString()
+      const newUrl = `/dat-ve?${searchParams}`
 
-   useEffect(() => {
-      setTripType((type as TTripType) || 'oneWay')
-      setDeparture(from || '')
-      setDestination(to || '')
-      setFromTimeState(fromTime ? parseDateFromParams(fromTime) : new Date())
-      setToTimeState(toTime ? parseDateFromParams(toTime) : new Date())
-      setQuantity(ticketCount ? Number(ticketCount) : 1)
-   }, [from, fromTime, to, toTime, ticketCount, type])
+      router.replace(newUrl)
+   }
+   console.log('re-render in quick booking:' + destination + '-' + departure)
 
    return (
       <div className="w-full px-2 py-10">
@@ -205,7 +205,9 @@ const QuickBooking = ({
                   <DatePicker
                      label="Ngày đi"
                      date={fromTimeState}
-                     handleSelect={(date) => setFromTimeState(date as Date)}
+                     handleSelect={(date) =>
+                        handleSelectDepartureTime(date as Date)
+                     }
                   />
                   {tripType === 'roundTrip' && toTimeState !== undefined && (
                      <DatePicker
@@ -232,7 +234,7 @@ const QuickBooking = ({
                <div className="absolute top-[103%] flex w-full justify-center sm:top-[105%] lg:top-[106%]">
                   <button
                      className="rounded-full bg-blue-600 px-16 py-3 text-white"
-                     onClick={handleSearch}
+                     onClick={() => handleSearch()}
                   >
                      Tìm chuyến xe
                   </button>
@@ -243,16 +245,4 @@ const QuickBooking = ({
    )
 }
 
-export default QuickBooking
-
-// <svg xmlns="http://www.w3.org/2000/svg" x-bind:width="size" x-bind:height="size" viewBox="0 0 24 24" fill="none" stroke="currentColor" x-bind:stroke-width="stroke" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
-//   <path d="M21 17l-18 0"></path>
-//   <path d="M6 10l-3 -3l3 -3"></path>
-//   <path d="M3 7l18 0"></path>
-//   <path d="M18 20l3 -3l-3 -3"></path>
-// </svg>
-
-// updown
-{
-   /* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2"> <path d="M3 9l4 -4l4 4m-4 -4v14"></path> <path d="M21 15l-4 4l-4 -4m4 4v-14"></path> </svg>  */
-}
+export default memo(QuickBooking)

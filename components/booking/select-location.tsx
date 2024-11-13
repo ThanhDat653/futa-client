@@ -28,7 +28,7 @@ const SelectLocation = ({
    name,
    placeholder,
    handleSelect,
-   value
+   value,
 }: ISelectLocationProps) => {
    return (
       <div className="h-fit w-full py-2">
@@ -48,7 +48,7 @@ const SelectLocation = ({
             <SelectContent className="h-fit">
                <SelectGroup>
                   <SelectLabel>{label}</SelectLabel>
-                  {array.map((region) => (
+                  {array?.map((region) => (
                      <SelectItem key={region.id} value={region.slug}>
                         {region.name}
                      </SelectItem>
