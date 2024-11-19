@@ -3,9 +3,11 @@
 import DepartureList from './departure/page'
 import DestinationList from './destination/page'
 import { BookingProvider, useBooking } from '@/context/booking-context'
+import { useRegions } from '@/context/region-context'
+import { useSchedule } from '@/context/schedule-context'
 import { cn, formatDateToYYYYMMDD } from '@/lib/utils'
 import { useSearchParams } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 
 type ParamsType = {
    fromTime: string
@@ -34,15 +36,13 @@ const TripList = () => {
    }
 
    const { currentTripType, handleSelectTripType } = useBooking()
+   const { from, to, totalTrips } = useSchedule()
 
    return (
       <div className="px-4 sm:px-0 md:col-span-3 lg:col-span-2">
-         {/* <div className="w-full">
-            <h3 className="text-lg font-medium">
-               {schedule?.regionFrom.name} - {schedule?.regionTo.name} (
-               {schedule?.trips.length})
-            </h3>
-         </div> */}
+         <div className="w-full">
+            <h3 className="text-lg font-medium">{`${from} - ${to}`}</h3>
+         </div>
 
          <div className="mt-2 flex w-full rounded uppercase shadow">
             <button
@@ -53,7 +53,8 @@ const TripList = () => {
                )}
                onClick={() => handleSelectTripType('departure')}
             >
-               Chuyến đi {params.fromTime}
+               {`  Chuyến đi - ${params.fromTime} `}
+               {currentTripType === 'departure' && `(${totalTrips})`}
             </button>
             {params.type === 'roundTrip' && (
                <button
@@ -65,18 +66,27 @@ const TripList = () => {
                   )}
                   onClick={() => handleSelectTripType('destination')}
                >
-                  Chuyến về {params.toTime}
+                  {`  Chuyến về - ${params.toTime} `}
+                  {currentTripType === 'destination' && `(${totalTrips})`}
                </button>
             )}
          </div>
 
-         {currentTripType === 'departure' ? (
-            <DepartureList searchParams={params as Required<typeof params>} />
+         {params.type === 'roundTrip' ? (
+            currentTripType === 'departure' ? (
+               <DepartureList
+                  searchParams={params as Required<typeof params>}
+               />
+            ) : (
+               <DestinationList
+                  searchParams={params as Required<typeof params>}
+               />
+            )
          ) : (
-            <DestinationList searchParams={params as Required<typeof params>} />
+            <DepartureList searchParams={params as Required<typeof params>} />
          )}
       </div>
    )
 }
 
-export default TripList
+export default memo(TripList)

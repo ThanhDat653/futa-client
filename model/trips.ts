@@ -1,4 +1,5 @@
 import { IScheduleDetail } from './schedule'
+import { Floor } from './seat'
 
 export interface IDepartureTime {
    id: string
@@ -23,15 +24,6 @@ export const departureTime: IDepartureTime[] = [
       name: '00:00 - 06:00',
    },
 ]
-
-export interface ISeat {
-   id: number
-   rowNo: number
-   colNo: number
-   floorNo: number
-   name: string
-   isReserved: boolean
-}
 
 export interface ILocation {
    name: string
@@ -58,6 +50,6 @@ export interface ITrip {
 
 export interface ITripDetail extends ITrip {
    licensePlate: string
-   seats: ISeat[]
+   seatData: Floor[]
    schedule: IScheduleDetail
 }

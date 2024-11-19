@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import Loading from '@/app/loading'
+import { TTripType } from '@/components/booking/quick-booking'
 import Trips from '@/components/pages/booking/trips'
 import { END_POINTS } from '@/constants/endpoints'
+import { useSchedule } from '@/context/schedule-context'
 import { formatDateToYYYYMMDD } from '@/lib/utils'
 import { getTripByFromToDate } from '@/service/trips'
 import React from 'react'
@@ -21,8 +24,17 @@ const DepartureList = ({
       type: string
    }
 }) => {
-   const { from, to, fromTime, ticketCount, vehicleType, timeInDay, floorNo } =
-      searchParams
+   const {
+      from,
+      to,
+      fromTime,
+      ticketCount,
+      vehicleType,
+      timeInDay,
+      floorNo,
+      type,
+   } = searchParams
+   const { setTotalTrips } = useSchedule()
    const { data, error, isLoading } = useSWR(
       [
          from,
@@ -46,12 +58,11 @@ const DepartureList = ({
          ),
       { revalidateOnFocus: false }
    )
+   if (data?.trips) setTotalTrips(data?.trips.length)
 
-   return data ? (
-      <Trips data={data} type="departure" />
-   ) : (
-      <h3>Không tìm thấy chuyến xe phù hợp.</h3>
-   )
+   if (isLoading) return <Loading />
+
+   return <Trips data={data!} type="departure" tripType={type as TTripType} />
 }
 
 export default DepartureList

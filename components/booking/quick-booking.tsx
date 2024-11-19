@@ -2,13 +2,7 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
-import React, {
-   ChangeEvent,
-   memo,
-   useCallback,
-   useEffect,
-   useState,
-} from 'react'
+import React, { ChangeEvent, memo, useState } from 'react'
 import SelectLocation from './select-location'
 import { IRegion } from '@/model/region'
 import TripTypeSelector from './trip-type-selector.'
@@ -17,12 +11,14 @@ import { Label } from '../ui/label'
 import { Input } from '../ui/input'
 import { formatDate, parseDateFromParams } from '@/lib/utils'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { RegionProvider, useRegions } from '@/context/region-context'
 export type TTripType = 'oneWay' | 'roundTrip'
 
 // Lấy các query từ URL
-const QuickBooking = ({ data }: { data: IRegion[] }) => {
+const QuickBooking = () => {
    const router = useRouter()
    const searchParams = useSearchParams()
+   const { regions, isLoading } = useRegions()
 
    // State lưu trữ thông tin form
    const [tripType, setTripType] = useState<TTripType>(
@@ -79,7 +75,6 @@ const QuickBooking = ({ data }: { data: IRegion[] }) => {
 
       router.replace(newUrl)
    }
-   console.log('re-render in quick booking:' + destination + '-' + departure)
 
    return (
       <div className="w-full px-2 py-10">
@@ -143,7 +138,7 @@ const QuickBooking = ({ data }: { data: IRegion[] }) => {
                         label="Điểm đi"
                         name="departure"
                         placeholder="Chọn điểm đi"
-                        array={data}
+                        array={regions!}
                         handleSelect={handleSelectDeparture}
                         value={departure}
                      />
@@ -169,7 +164,7 @@ const QuickBooking = ({ data }: { data: IRegion[] }) => {
                         label="Điểm đến"
                         name="destination"
                         placeholder="Chọn điểm đến"
-                        array={data}
+                        array={regions!}
                         handleSelect={handleSelectDestination}
                         value={destination}
                      />

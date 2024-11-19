@@ -1,7 +1,7 @@
 'use client'
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { IBookingState, useBooking } from '@/context/booking-context'
+import { useBooking } from '@/context/booking-context'
 import {
    cn,
    formatDistance,
@@ -9,11 +9,12 @@ import {
    formatTime,
    formatVND,
 } from '@/lib/utils'
-import { IRegion } from '@/model/region'
 import { IScheduleTrip } from '@/model/schedule'
 import { ILocation, ITrip } from '@/model/trips'
 import React, { useState } from 'react'
 import SeatMap from './seat-map'
+import { TTripType } from '@/components/booking/quick-booking'
+import { useRouter } from 'next/navigation'
 
 export type TType = 'departure' | 'destination'
 
@@ -26,14 +27,18 @@ interface ITripCardProps {
    trip: ITrip
    onSelect: (
       id: string,
-      seats: string[] | null,
+      seats: { id: number; name: string }[] | [],
       from: string,
       to: string,
       duration: number,
       distance: number,
-      date: string
+      date: string,
+      startTime: string,
+      endTime: string
    ) => void
    current?: string
+   tripType: TTripType
+   type: TType
 }
 
 const TripCard = ({
@@ -45,34 +50,58 @@ const TripCard = ({
    trip,
    onSelect,
    current,
+   tripType,
+   type,
 }: ITripCardProps) => {
+   const {
+      handleSelectTripType,
+      departureTicket,
+      destinationTicket,
+      handleSetStep,
+      step,
+   } = useBooking()
    const [openSeatMap, setOpenSeatMap] = useState<boolean>(false)
+   const router = useRouter()
    const toggleSeatMap = () => {
       setOpenSeatMap(!openSeatMap)
    }
+
+   const handleSelectTrip = () => {
+      if (tripType === 'oneWay') handleSetStep(2)
+      if (tripType === 'roundTrip') {
+         if (!departureTicket?.ticketId) handleSelectTripType('departure')
+         if (!destinationTicket?.ticketId) handleSelectTripType('destination')
+         else handleSetStep(2)
+      }
+   }
+
+   const currentTicket =
+      type === 'destination' ? destinationTicket : departureTicket
 
    return (
       <div
          onClick={() =>
             onSelect(
                trip.id,
-               [],
+               currentTicket?.ticketId === trip.id ? currentTicket?.seats : [],
                from.name,
                to.name,
                duration,
                distance,
-               trip.startTime
+               trip.startTime,
+               trip.startTime,
+               trip.endTime
             )
          }
          className={cn(
-            'flex w-full cursor-pointer flex-col items-start justify-start rounded-lg border bg-white p-4 shadow-md lg:px-10',
+            'flex w-full cursor-pointer flex-col items-start justify-start rounded-lg border bg-white p-4 shadow-md md:px-10 lg:px-8',
             trip.id === current && 'border-2 border-sky-600 ring ring-sky-100'
          )}
          key={trip.id}
       >
-         <div className="flex w-full items-center justify-between gap-10 border-b pb-4">
+         <div className="flex w-full items-center justify-between gap-12 border-b">
             <div className="flex w-full flex-1 flex-col justify-start pb-4">
-               <div className="flex items-center justify-between py-2 sm:py-4">
+               <div className="flex items-center justify-between py-2">
                   <h1 className="text-xl font-medium text-gray-700 md:text-2xl">
                      {formatTime(trip.startTime)}
                   </h1>
@@ -124,7 +153,7 @@ const TripCard = ({
                </div>
             </div>
             <div className="hidden h-full w-fit flex-col items-end justify-between gap-4 md:flex">
-               <div className="flex w-full items-center justify-end gap-5 font-medium">
+               <div className="flex w-full items-center justify-end gap-5">
                   <span className="text-slate-500 decoration-current">
                      {vehicle}
                   </span>
@@ -140,10 +169,15 @@ const TripCard = ({
          <div className="flex w-full items-center justify-between pt-4">
             <div className="flex flex-1 items-center justify-start gap-5 md:gap-10">
                <button
-                  onClick={toggleSeatMap}
-                  disabled={trip.id === current}
+                  onClick={(event) => {
+                     event.stopPropagation()
+                     toggleSeatMap()
+                  }}
                   className={cn(
-                     'font-medium text-slate-500 transition-all duration-200 hover:text-orange-500'
+                     'text-sm font-medium text-slate-500 transition-all duration-200 hover:text-teal-500',
+                     {
+                        'text-teal-600': openSeatMap,
+                     }
                   )}
                >
                   Chọn ghế
@@ -154,16 +188,12 @@ const TripCard = ({
             </span>
             <div className="hidden flex-col justify-center md:flex">
                <button
-                  // onClick={() => onSelect(trip.id)}
-                  disabled={trip.id === current}
+                  onClick={handleSelectTrip}
                   className={cn(
-                     'rounded-full bg-orange-100 px-10 py-2 text-sm leading-5 text-orange-700 transition-all duration-200',
-                     trip.id === current && 'bg-sky-100 text-sky-700',
-                     trip.id !== current &&
-                        'hover:bg-orange-600 hover:text-white'
+                     'cursor-pointer rounded-full bg-orange-100 px-10 py-2 text-sm leading-5 text-orange-700 transition-all duration-200 hover:bg-orange-600 hover:text-white'
                   )}
                >
-                  {trip.id === current ? 'Đang chọn' : 'Chọn chuyến'}
+                  Chọn chuyến
                </button>
             </div>
          </div>
@@ -174,27 +204,39 @@ const TripCard = ({
                   'mx-auto mt-1 w-full rounded bg-orange-100 py-2 text-orange-600',
                   trip.id === current && 'bg-sky-100 text-sky-700'
                )}
-               // onClick={() => onSelect(trip.id)}
             >
-               {trip.id === current ? 'Đang chọn' : 'Chọn chuyến'}
+               Chọn chuyến
             </button>
          </div>
          {trip.id === current && openSeatMap && (
-            <SeatMap id={trip.id} key={trip.id} />
+            <SeatMap
+               step={step}
+               id={trip.id}
+               key={trip.id}
+               handleSelectTrip={handleSelectTrip}
+            />
          )}
       </div>
    )
 }
 
-const Trips = ({ data, type }: { data: IScheduleTrip; type: TType }) => {
+const Trips = ({
+   data,
+   tripType,
+   type,
+}: {
+   data: IScheduleTrip
+   tripType: TTripType
+   type: TType
+}) => {
    const {
       departureTicket,
       destinationTicket,
       handleSelectDeparture,
       handleSelectDestination,
+      handleSelectTripType,
    } = useBooking()
 
-   // console.log(ticket)
    return (
       <div className="flex flex-col items-center justify-start gap-2 py-5">
          {data.trips.map((trip) => (
@@ -216,6 +258,8 @@ const Trips = ({ data, type }: { data: IScheduleTrip; type: TType }) => {
                      ? departureTicket?.ticketId
                      : destinationTicket?.ticketId
                }
+               tripType={tripType}
+               type={type}
             />
          ))}
       </div>

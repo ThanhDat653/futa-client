@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
+import { TTripType } from '@/components/booking/quick-booking'
 import Trips from '@/components/pages/booking/trips'
 import { END_POINTS } from '@/constants/endpoints'
+import { useSchedule } from '@/context/schedule-context'
 import { formatDateToYYYYMMDD } from '@/lib/utils'
 import { getTripByFromToDate } from '@/service/trips'
-import React from 'react'
+import React, { memo } from 'react'
 import useSWR from 'swr'
 
 // type TType = 'departure' | 'destination'
@@ -24,8 +26,17 @@ const DestinationList = ({
       vehicleType: string
    }
 }) => {
-   const { from, to, toTime, ticketCount, vehicleType, timeInDay, floorNo } =
-      searchParams
+   const {
+      from,
+      to,
+      toTime,
+      ticketCount,
+      vehicleType,
+      timeInDay,
+      floorNo,
+      type,
+   } = searchParams
+   const { setTotalTrips } = useSchedule()
    const { data, error, isLoading } = useSWR(
       [
          to,
@@ -49,11 +60,13 @@ const DestinationList = ({
          )
    )
 
+   if (data?.trips) setTotalTrips(data?.trips.length)
+
    return data ? (
-      <Trips data={data} type="destination" />
+      <Trips data={data} type="destination" tripType={type as TTripType} />
    ) : (
       <h3>Không tìm thấy chuyến xe phù hợp.</h3>
    )
 }
 
-export default DestinationList
+export default memo(DestinationList)

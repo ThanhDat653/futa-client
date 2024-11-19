@@ -4,40 +4,55 @@ import { TType } from '@/components/pages/booking/trips'
 import { ILocation } from '@/model/trips'
 import { createContext, useContext, useState, ReactNode } from 'react'
 
+export type TBookingStep = 1 | 2
+
 export interface IBookingState {
    ticketId: string
-   seats: string[] | null
+   seats: { id: number; name: string }[] | []
    from: string
    to: string
    duration: number
    distance: number
    date: string
+   startTime: string
+   endTime: string
 }
 
 // Định nghĩa kiểu dữ liệu cho context
 interface BookingContextType {
+   step: TBookingStep
    departureTicket: IBookingState | undefined
    destinationTicket: IBookingState | undefined
+   handleSetStep: (step: TBookingStep) => void
    handleSelectDeparture: (
       id: string,
-      seats: string[] | null,
+      seats: { id: number; name: string }[] | [],
       from: string,
       to: string,
       duration: number,
       distance: number,
-      date: string
+      date: string,
+      startTime: string,
+      endTime: string
    ) => void
    handleSelectDestination: (
       id: string,
-      seats: string[] | null,
+      seats: { id: number; name: string }[] | [],
       from: string,
       to: string,
       duration: number,
       distance: number,
-      date: string
+      date: string,
+      startTime: string,
+      endTime: string
    ) => void
    currentTripType: TType
    handleSelectTripType: (type: TType) => void
+   handleToggleSeat: (
+      ticketId: string,
+      seatId: number,
+      seatName: string
+   ) => void
 }
 
 // Tạo context
@@ -45,20 +60,27 @@ const BookingContext = createContext<BookingContextType | null>(null)
 
 // Provider để quản lý dữ liệu trong context
 export const BookingProvider = ({ children }: { children: ReactNode }) => {
+   const [step, setStep] = useState<TBookingStep>(1)
    const [departureTicket, setDeparture] = useState<IBookingState | undefined>()
    const [destinationTicket, setDestination] = useState<
       IBookingState | undefined
    >()
    const [currentTripType, setCurrentTripType] = useState<TType>('departure')
 
+   const handleSetStep = (s: TBookingStep) => {
+      setStep(s)
+   }
+
    const handleSelectDeparture = (
       id: string,
-      seats: string[] | null,
+      seats: { id: number; name: string }[] | [],
       from: string,
       to: string,
       duration: number,
       distance: number,
-      date: string
+      date: string,
+      startTime: string,
+      endTime: string
    ) => {
       setDeparture({
          ticketId: id,
@@ -68,16 +90,21 @@ export const BookingProvider = ({ children }: { children: ReactNode }) => {
          duration: duration,
          distance: distance,
          date: date,
+         startTime: startTime,
+         endTime: endTime,
       })
    }
+
    const handleSelectDestination = (
       id: string,
-      seats: string[] | null,
+      seats: { id: number; name: string }[] | [],
       from: string,
       to: string,
       duration: number,
       distance: number,
-      date: string
+      date: string,
+      startTime: string,
+      endTime: string
    ) => {
       setDestination({
          ticketId: id,
@@ -87,21 +114,75 @@ export const BookingProvider = ({ children }: { children: ReactNode }) => {
          duration: duration,
          distance: distance,
          date: date,
+         startTime: startTime,
+         endTime: endTime,
       })
    }
+
    const handleSelectTripType = (type: TType) => {
       setCurrentTripType(type)
+   }
+
+   const handleToggleSeat = (
+      ticketId: string,
+      seatId: number,
+      seatName: string
+   ) => {
+      const updateSeats = (
+         setTicket: React.Dispatch<
+            React.SetStateAction<IBookingState | undefined>
+         >
+      ) => {
+         setTicket((prev) => {
+            // Nếu ticket không tồn tại hoặc ticketId không khớp, giữ nguyên state
+            if (!prev || prev.ticketId !== ticketId) return prev
+
+            // Đảm bảo seats luôn là mảng
+            const currentSeats = Array.isArray(prev.seats) ? prev.seats : []
+
+            // Kiểm tra ghế đã tồn tại hay chưa
+            const isSeatSelected = currentSeats.some(
+               (seat) => seat.id === seatId
+            )
+
+            // Debug trạng thái trước khi cập nhật
+            console.log('Before update:', currentSeats)
+
+            // Tạo mảng ghế mới
+            const updatedSeats = isSeatSelected
+               ? currentSeats.filter((seat) => seat.id !== seatId) // Xóa ghế nếu đã chọn
+               : [...currentSeats, { id: seatId, name: seatName }] // Thêm ghế nếu chưa chọn
+
+            // Debug trạng thái sau khi cập nhật
+            console.log('After update:', updatedSeats)
+
+            return {
+               ...prev,
+               seats: updatedSeats,
+            }
+         })
+      }
+
+      // Kiểm tra ticket để cập nhật đúng state
+      if (departureTicket?.ticketId === ticketId) {
+         updateSeats(setDeparture)
+      } else if (destinationTicket?.ticketId === ticketId) {
+         updateSeats(setDestination)
+      }
    }
 
    return (
       <BookingContext.Provider
          value={{
+            step,
             currentTripType,
             departureTicket,
             destinationTicket,
+            handleSetStep,
             handleSelectDeparture,
             handleSelectDestination,
             handleSelectTripType,
+            handleToggleSeat,
          }}
       >
          {children}

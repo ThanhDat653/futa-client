@@ -16,3 +16,11 @@ export interface ISeat {
    name: string
    isReserved: boolean
 }
+
+export interface IRow {
+   floorNo: number
+   rowId: number
+   seats: ISeat[]
+}
+
+export type Floor = IRow[]
