@@ -8,6 +8,7 @@ import { IRegister } from '@/model/profile'
 import { CheckCircleIcon } from "lucide-react";
 import Link from "next/link";
 import {registerUser} from "@/service/profile";
+import {END_POINTS} from "@/constants/endpoints";
 
 interface FormValues {
    email: string
@@ -29,6 +30,8 @@ const Page = () => {
    } = useForm<FormValues>()
 
    const [submitted, setSubmitted] = useState(false);
+
+   const googleUrl: string = `${process.env.NEXT_PUBLIC_AUTH_FUTA_API_URL}/${END_POINTS.AUTH.GOOGLE}`
 
    const onSubmit: SubmitHandler<FormValues> = async (data: IRegister) => {
       try {
@@ -85,155 +88,170 @@ const Page = () => {
                   Cùng bạn trên mọi nẻo đường
                </p>
             </div>
-            <div
-               className={cn(
-                  'h-5/6 w-full px-10 lg:w-1/2',
-                  comfortaa.className
-               )}
-            >
-               <div className="flex w-full flex-col items-center justify-center">
-                  <p className="text-[16px] font-bold text-sky-300">Welcome</p>
-                  <h1 className="text-label text-center font-inter text-[16px] font-bold sm:text-[28px]">
-                     TO TRIP BOOKING
-                  </h1>
-               </div>
-               <form
-                  onSubmit={handleSubmit(onSubmit)}
-                  className="mt-6 flex w-full flex-col items-center justify-center"
-               >
-                  {/* Email Field */}
-                  <div className="mt-4 w-full">
-                     <label className="text-label mb-2 block font-comfortaa text-[13px] font-medium uppercase">
-                        Email <span className="text-red-800">*</span>
-                     </label>
-                     <input
-                        {...register('email', {
-                           required: 'Email là bắt buộc',
-                        })}
-                        className="text-label h-8 w-full bg-transparent focus:outline-none"
-                        placeholder="yourmail@gmail.com"
-                        type="text"
-                     />
-                     <div className="h-[1px] w-full bg-sky-300"></div>
-                     {errors.email && (
-                        <p className="mt-1 text-[12px] text-red-800">
-                           {errors.email.message}
-                        </p>
-                     )}
-                  </div>
+             <div
+                 className={cn(
+                     'h-5/6 w-full px-10 lg:w-1/2',
+                     comfortaa.className
+                 )}
+             >
+                 <div className="flex w-full flex-col items-center justify-center">
+                     <p className="text-[16px] font-bold text-sky-300">Welcome</p>
+                     <h1 className="text-label text-center font-inter text-[16px] font-bold sm:text-[28px]">
+                         TO TRIP BOOKING
+                     </h1>
+                 </div>
+                 <form
+                     onSubmit={handleSubmit(onSubmit)}
+                     className="mt-6 flex w-full flex-col items-center justify-center"
+                 >
+                     {/* Email Field */}
+                     <div className="mt-4 w-full">
+                         <label className="text-label mb-2 block font-comfortaa text-[13px] font-medium uppercase">
+                             Email <span className="text-red-800">*</span>
+                         </label>
+                         <input
+                             {...register('email', {
+                                 required: 'Email là bắt buộc',
+                             })}
+                             className="text-label h-8 w-full bg-transparent focus:outline-none"
+                             placeholder="yourmail@gmail.com"
+                             type="text"
+                         />
+                         <div className="h-[1px] w-full bg-sky-300"></div>
+                         {errors.email && (
+                             <p className="mt-1 text-[12px] text-red-800">
+                                 {errors.email.message}
+                             </p>
+                         )}
+                     </div>
 
-                  {/* Full Name Field */}
-                  <div className="mt-4 w-full">
-                     <label className="text-label mb-2 block font-comfortaa text-[13px] font-medium uppercase">
-                        Họ và tên <span className="text-red-800">*</span>
-                     </label>
-                     <input
-                        {...register('fullname', {
-                           required: 'Họ và tên là bắt buộc',
-                        })}
-                        className="text-label h-8 w-full bg-transparent focus:outline-none"
-                        placeholder="Tên của bạn"
-                        type="text"
-                     />
-                     <div className="h-[1px] w-full bg-sky-300"></div>
-                     {errors.fullname && (
-                        <p className="mt-1 text-[12px] text-red-800">
-                           {errors.fullname.message}
-                        </p>
-                     )}
-                  </div>
+                     {/* Full Name Field */}
+                     <div className="mt-4 w-full">
+                         <label className="text-label mb-2 block font-comfortaa text-[13px] font-medium uppercase">
+                             Họ và tên <span className="text-red-800">*</span>
+                         </label>
+                         <input
+                             {...register('fullname', {
+                                 required: 'Họ và tên là bắt buộc',
+                             })}
+                             className="text-label h-8 w-full bg-transparent focus:outline-none"
+                             placeholder="Tên của bạn"
+                             type="text"
+                         />
+                         <div className="h-[1px] w-full bg-sky-300"></div>
+                         {errors.fullname && (
+                             <p className="mt-1 text-[12px] text-red-800">
+                                 {errors.fullname.message}
+                             </p>
+                         )}
+                     </div>
 
-                  {/* Phone Number Field */}
-                  <div className="mt-4 w-full">
-                     <label className="text-label mb-2 block font-comfortaa text-[13px] font-medium uppercase">
-                        Số điện thoại
-                     </label>
-                     <input
-                        {...register('phoneNumber', {
-                           required: 'Số điện thoại là bắt buộc',
-                           pattern: {
-                              value: /^[0-9]{10,11}$/,
-                              message: 'Số điện thoại không hợp lệ',
-                           },
-                        })}
-                        className="text-label h-8 w-full bg-transparent focus:outline-none"
-                        placeholder="0846680927"
-                        type="text"
-                     />
-                     <div className="h-[1px] w-full bg-sky-300"></div>
-                     {errors.phoneNumber && (
-                        <p className="mt-1 text-[12px] text-red-800">
-                           {errors.phoneNumber.message}
-                        </p>
-                     )}
-                  </div>
+                     {/* Phone Number Field */}
+                     <div className="mt-4 w-full">
+                         <label className="text-label mb-2 block font-comfortaa text-[13px] font-medium uppercase">
+                             Số điện thoại
+                         </label>
+                         <input
+                             {...register('phoneNumber', {
+                                 required: 'Số điện thoại là bắt buộc',
+                                 pattern: {
+                                     value: /^[0-9]{10,11}$/,
+                                     message: 'Số điện thoại không hợp lệ',
+                                 },
+                             })}
+                             className="text-label h-8 w-full bg-transparent focus:outline-none"
+                             placeholder="0846680927"
+                             type="text"
+                         />
+                         <div className="h-[1px] w-full bg-sky-300"></div>
+                         {errors.phoneNumber && (
+                             <p className="mt-1 text-[12px] text-red-800">
+                                 {errors.phoneNumber.message}
+                             </p>
+                         )}
+                     </div>
 
-                  {/* Password Field */}
-                  <div className="mt-4 w-full">
-                     <label className="text-label mb-2 block font-comfortaa text-[13px] font-medium uppercase">
-                        Mật khẩu <span className="text-red-800">*</span>
-                     </label>
-                     <input
-                        {...register('password', {
-                           required: 'Mật khẩu là bắt buộc',
-                           minLength: {
-                              value: 8,
-                              message: 'Mật khẩu phải có ít nhất 8 ký tự',
-                           },
-                        })}
-                        className="text-label h-8 w-full bg-transparent focus:outline-none"
-                        placeholder="********"
-                        type="password"
-                     />
-                     <div className="h-[1px] w-full bg-sky-300"></div>
-                     {errors.password && (
-                        <p className="mt-1 text-[12px] text-red-800">
-                           {errors.password.message}
-                        </p>
-                     )}
-                  </div>
+                     {/* Password Field */}
+                     <div className="mt-4 w-full">
+                         <label className="text-label mb-2 block font-comfortaa text-[13px] font-medium uppercase">
+                             Mật khẩu <span className="text-red-800">*</span>
+                         </label>
+                         <input
+                             {...register('password', {
+                                 required: 'Mật khẩu là bắt buộc',
+                                 minLength: {
+                                     value: 8,
+                                     message: 'Mật khẩu phải có ít nhất 8 ký tự',
+                                 },
+                             })}
+                             className="text-label h-8 w-full bg-transparent focus:outline-none"
+                             placeholder="********"
+                             type="password"
+                         />
+                         <div className="h-[1px] w-full bg-sky-300"></div>
+                         {errors.password && (
+                             <p className="mt-1 text-[12px] text-red-800">
+                                 {errors.password.message}
+                             </p>
+                         )}
+                     </div>
 
-                  {/* Confirm Password Field */}
-                  <div className="mt-4 w-full">
-                     <label className="text-label mb-2 block font-comfortaa text-[13px] font-medium uppercase">
-                        Xác nhận mật khẩu{' '}
-                        <span className="text-red-800">*</span>
-                     </label>
-                     <input
-                        {...register('confirmPassword', {
-                           required: 'Xác nhận mật khẩu là bắt buộc',
-                           validate: (value) =>
-                              value === passwordValue || 'Mật khẩu không khớp',
-                        })}
-                        className="text-label h-8 w-full bg-transparent focus:outline-none"
-                        placeholder="********"
-                        type="password"
-                     />
-                     <div className="h-[1px] w-full bg-sky-300"></div>
-                     {errors.confirmPassword && (
-                        <p className="mt-1 text-[12px] text-red-800">
-                           {errors.confirmPassword.message}
-                        </p>
-                     )}
-                  </div>
+                     {/* Confirm Password Field */}
+                     <div className="mt-4 w-full">
+                         <label className="text-label mb-2 block font-comfortaa text-[13px] font-medium uppercase">
+                             Xác nhận mật khẩu{' '}
+                             <span className="text-red-800">*</span>
+                         </label>
+                         <input
+                             {...register('confirmPassword', {
+                                 required: 'Xác nhận mật khẩu là bắt buộc',
+                                 validate: (value) =>
+                                     value === passwordValue || 'Mật khẩu không khớp',
+                             })}
+                             className="text-label h-8 w-full bg-transparent focus:outline-none"
+                             placeholder="********"
+                             type="password"
+                         />
+                         <div className="h-[1px] w-full bg-sky-300"></div>
+                         {errors.confirmPassword && (
+                             <p className="mt-1 text-[12px] text-red-800">
+                                 {errors.confirmPassword.message}
+                             </p>
+                         )}
+                     </div>
 
-                  {/* Submit Button */}
-                  <button
-                     type="submit"
-                     className="mt-8 w-[160px] rounded-3xl bg-sky-400 px-5 py-2 text-[15px] font-semibold text-white"
-                  >
-                     Đăng ký
-                  </button>
-                  <div className="mt-2 flex w-full items-center justify-center space-x-2">
-                     <label className="text-label mb-4 block text-[12px] font-bold">
-                        Đã có tài khoản?
-                     </label>
-                     <label className="mb-4 block cursor-pointer text-[12px] font-bold text-sky-300">
-                        <p onClick={() => signIn('client')}>Đăng nhập</p>
-                     </label>
-                  </div>
-               </form>
-            </div>
+                     {/* Submit Button */}
+                     <button
+                         type="submit"
+                         className="mt-8 w-[160px] rounded-3xl bg-sky-400 px-5 py-2 text-[15px] font-semibold text-white"
+                     >
+                         Đăng ký
+                     </button>
+                     <div className="mt-2 flex w-full items-center justify-center space-x-2">
+                         <label className="text-label mb-4 block text-[12px] font-bold">
+                             Đã có tài khoản?
+                         </label>
+                         <label className="mb-4 block cursor-pointer text-[12px] font-bold text-sky-300">
+                             <p onClick={() => signIn('client')}>Đăng nhập</p>
+                         </label>
+                     </div>
+                 </form>
+                 <div className="w-full flex justify-center items-center space-x-3">
+                     <div className="w-full h-[1px] bg-gray-400"></div>
+                     <label className="block text-[16px] text-label font-inter uppercase">hoặc </label>
+                     <div className="w-full h-[1px] bg-gray-400"></div>
+                 </div>
+                 <div className="w-full mt-4 flex-col justify-center text-center columns-1 space-y-2 ">
+                     <Link href={googleUrl}
+                           className="relative px-0 sm:px-5 py-2 inline-flex justify-center items-center border-gray-200 border hover:bg-gray-200 text-sm sm:text-[15px] w-[200px] sm:w-[250px] rounded-3xl font-inter">
+                         <div className="bg-cover w-5 h-5 bg-center absolute left-3">
+                             {/* eslint-disable-next-line @next/next/no-img-element */}
+                             <img src={"/IconGoogle.png"} alt={"google-logo"}/>
+                         </div>
+                         <p>Tiếp tục với Google</p>
+                     </Link>
+                 </div>
+             </div>
          </div>
       </div>
    )

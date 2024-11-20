@@ -29,6 +29,7 @@ export const END_POINTS = {
    },
    AUTH: {
       LOGOUT: `logout`,
-      TOKEN: `oauth2/token`
+      TOKEN: `oauth2/token`,
+      GOOGLE: `oauth2/authorization/google`
    }
 }
