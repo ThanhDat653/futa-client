@@ -1,11 +1,13 @@
 "use client"
-import React from 'react';
+import React, {useEffect} from 'react';
 import {signIn} from "next-auth/react";
 import Loading from "@/app/loading";
 
 const Page = () => {
 
-    signIn('client')
+    useEffect(() => {
+        signIn('client');
+    }, []);
 
     return (
         <Loading />
