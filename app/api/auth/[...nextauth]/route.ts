@@ -6,6 +6,7 @@ const getProfileUrl = `${process.env.NEXT_PUBLIC_FUTA_API_URL}/${END_POINTS.PROF
 const authDomain = `${process.env.NEXT_PUBLIC_AUTH_FUTA_API_URL}`
 
 const authOptions: NextAuthOptions = {
+	secret: process.env.NEXTAUTH_SECRET,
 	providers: [
 		{
 			id: 'client',
