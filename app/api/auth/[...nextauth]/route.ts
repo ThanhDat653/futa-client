@@ -1,11 +1,11 @@
-import NextAuth, {AuthOptions} from 'next-auth';
+import NextAuth, {NextAuthOptions} from 'next-auth';
 import {cookies} from "next/headers";
 import {END_POINTS} from "@/constants/endpoints";
 
 const getProfileUrl = `${process.env.NEXT_PUBLIC_FUTA_API_URL}/${END_POINTS.PROFILE.URl}/${END_POINTS.PROFILE.CHILD.INFO}`
 const authDomain = `${process.env.NEXT_PUBLIC_AUTH_FUTA_API_URL}`
 
-export const authOptions: AuthOptions = {
+const authOptions: NextAuthOptions = {
 	providers: [
 		{
 			id: 'client',
@@ -62,5 +62,5 @@ export const authOptions: AuthOptions = {
 	},
 };
 
-const handle = NextAuth(authOptions);
-export { handle as GET, handle as POST };
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };
