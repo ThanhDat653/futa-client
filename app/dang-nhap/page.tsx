@@ -6,7 +6,7 @@ import Loading from "@/app/loading";
 const Page = () => {
 
     useEffect(() => {
-        signIn('client');
+        signIn('client', { callbackUrl: '/' });
     }, []);
 
     return (
