@@ -8,7 +8,7 @@ export type TBookingStep = 1 | 2
 
 export interface IBookingState {
    ticketId: string
-   seats: { id: number; name: string }[] | []
+   seats: { id: number; name: string; price: number }[] | []
    from: string
    to: string
    duration: number
@@ -26,7 +26,7 @@ interface BookingContextType {
    handleSetStep: (step: TBookingStep) => void
    handleSelectDeparture: (
       id: string,
-      seats: { id: number; name: string }[] | [],
+      seats: { id: number; name: string; price: number }[] | [],
       from: string,
       to: string,
       duration: number,
@@ -37,7 +37,7 @@ interface BookingContextType {
    ) => void
    handleSelectDestination: (
       id: string,
-      seats: { id: number; name: string }[] | [],
+      seats: { id: number; name: string; price: number }[] | [],
       from: string,
       to: string,
       duration: number,
@@ -51,7 +51,8 @@ interface BookingContextType {
    handleToggleSeat: (
       ticketId: string,
       seatId: number,
-      seatName: string
+      seatName: string,
+      price: number
    ) => void
 }
 
@@ -73,7 +74,7 @@ export const BookingProvider = ({ children }: { children: ReactNode }) => {
 
    const handleSelectDeparture = (
       id: string,
-      seats: { id: number; name: string }[] | [],
+      seats: { id: number; name: string; price: number }[] | [],
       from: string,
       to: string,
       duration: number,
@@ -97,7 +98,7 @@ export const BookingProvider = ({ children }: { children: ReactNode }) => {
 
    const handleSelectDestination = (
       id: string,
-      seats: { id: number; name: string }[] | [],
+      seats: { id: number; name: string; price: number }[] | [],
       from: string,
       to: string,
       duration: number,
@@ -126,7 +127,8 @@ export const BookingProvider = ({ children }: { children: ReactNode }) => {
    const handleToggleSeat = (
       ticketId: string,
       seatId: number,
-      seatName: string
+      seatName: string,
+      price: number
    ) => {
       const updateSeats = (
          setTicket: React.Dispatch<
@@ -145,16 +147,10 @@ export const BookingProvider = ({ children }: { children: ReactNode }) => {
                (seat) => seat.id === seatId
             )
 
-            // Debug trạng thái trước khi cập nhật
-            console.log('Before update:', currentSeats)
-
             // Tạo mảng ghế mới
             const updatedSeats = isSeatSelected
                ? currentSeats.filter((seat) => seat.id !== seatId) // Xóa ghế nếu đã chọn
-               : [...currentSeats, { id: seatId, name: seatName }] // Thêm ghế nếu chưa chọn
-
-            // Debug trạng thái sau khi cập nhật
-            console.log('After update:', updatedSeats)
+               : [...currentSeats, { id: seatId, name: seatName, price: price }] // Thêm ghế nếu chưa chọn
 
             return {
                ...prev,

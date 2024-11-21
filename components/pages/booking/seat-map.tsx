@@ -5,7 +5,7 @@ import { TBookingStep, useBooking } from '@/context/booking-context'
 import { cn } from '@/lib/utils'
 import { Floor, IFloor, IRow, ISeat } from '@/model/seat'
 import { getTripDetail } from '@/service/trips'
-import React from 'react'
+import React, { memo } from 'react'
 import useSWR from 'swr'
 
 const Seat = ({ data, tripId }: { data: ISeat; tripId: string }) => {
@@ -28,7 +28,9 @@ const Seat = ({ data, tripId }: { data: ISeat; tripId: string }) => {
             }
          )}
          disabled={data.isReserved}
-         onClick={() => handleToggleSeat(tripId, data.id, data.name)}
+         onClick={() =>
+            handleToggleSeat(tripId, data.id, data.name, data.price)
+         }
       >
          <span
             className={cn('text-xs font-medium', {
@@ -150,4 +152,4 @@ const SeatMap = ({
    )
 }
 
-export default SeatMap
+export default memo(SeatMap)

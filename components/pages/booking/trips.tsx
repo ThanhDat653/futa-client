@@ -27,7 +27,7 @@ interface ITripCardProps {
    trip: ITrip
    onSelect: (
       id: string,
-      seats: { id: number; name: string }[] | [],
+      seats: { id: number; name: string; price: number }[] | [],
       from: string,
       to: string,
       duration: number,
@@ -67,11 +67,13 @@ const TripCard = ({
    }
 
    const handleSelectTrip = () => {
-      if (tripType === 'oneWay') handleSetStep(2)
+      if (tripType === 'oneWay') return handleSetStep(2)
       if (tripType === 'roundTrip') {
-         if (!departureTicket?.ticketId) handleSelectTripType('departure')
-         if (!destinationTicket?.ticketId) handleSelectTripType('destination')
-         else handleSetStep(2)
+         if (!departureTicket?.ticketId)
+            return handleSelectTripType('departure')
+         if (!destinationTicket?.ticketId)
+            return handleSelectTripType('destination')
+         else return handleSetStep(2)
       }
    }
 

@@ -27,8 +27,6 @@ const Filter = ({ data }: { data: IVehicle[] }) => {
       router.push(`?${filterParams.toString()}`)
    }
 
-   console.log('filter')
-
    return (
       <aside className="col-span-1 hidden h-fit flex-col items-start justify-start rounded-lg bg-white shadow-md lg:flex">
          <div className="flex w-full items-center justify-between px-5 pt-5">
