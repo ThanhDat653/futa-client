@@ -15,7 +15,7 @@ export const END_POINTS = {
    TRIP: {
       POPULAR: `schedules/popular`,
       BY_FROMTODATE: `trips`,
-      DETAIL:(id:string)=> `trips/${id}`,
+      DETAIL: (id: string) => `trips/${id}`,
    },
    VEHICLE: {
       TYPE: `vtypes`,
@@ -24,12 +24,15 @@ export const END_POINTS = {
       URl: `profiles`,
       CHILD: {
          INFO: `info`,
-         REGISTER: `register`
-      }
+         REGISTER: `register`,
+      },
    },
    AUTH: {
       LOGOUT: `logout`,
       TOKEN: `oauth2/token`,
-      GOOGLE: `oauth2/authorization/google`
-   }
+      GOOGLE: `oauth2/authorization/google`,
+   },
+   BILL: {
+      ALL: 'bills',
+   },
 }

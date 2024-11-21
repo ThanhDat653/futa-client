@@ -20,7 +20,6 @@ import { SessionProvider } from "next-auth/react";
 import AuthControl from "@/components/auth/auth-control";
 
 const Header = () => {
-   // const [sidebar, setSidebar] = useState<boolean>(false)
    const pathname = usePathname()
 
    return (

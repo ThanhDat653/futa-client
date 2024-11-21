@@ -15,6 +15,7 @@ export interface ISeat {
    floorNo: number
    name: string
    isReserved: boolean
+   price: number
 }
 
 export interface IRow {

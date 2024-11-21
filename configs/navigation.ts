@@ -4,16 +4,8 @@ export const MAIN_NAVIGATION = [
       name: 'Trang chủ',
    },
    {
-      href: '/lich-trinh',
-      name: 'Lịch trình',
-   },
-   {
       href: '/tra-cuu-ve',
       name: 'Tra cứu vé',
-   },
-   {
-      href: '/hoa-don',
-      name: 'Hóa đơn',
    },
    {
       href: '/tin-tuc',
