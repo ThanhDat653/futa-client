@@ -8,7 +8,6 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { END_POINTS } from '@/constants/endpoints'
 import { useBooking } from '@/context/booking-context'
-import { useRegions } from '@/context/region-context'
 import { useSchedule } from '@/context/schedule-context'
 import {
    formatDate,
@@ -16,13 +15,12 @@ import {
    formatDuration,
    formatTime,
    formatVND,
-   getCookieValue,
 } from '@/lib/utils'
 import { IBill } from '@/model/bill'
 import { createPaymentURL } from '@/service/bill'
 import { getUserInfo } from '@/service/profile'
-import { redirect, useSearchParams } from 'next/navigation'
-import React, { useRef, useState } from 'react'
+import {  useSearchParams } from 'next/navigation'
+import React, { useState } from 'react'
 import useSWR from 'swr'
 
 const SecondStep = () => {
@@ -46,11 +44,11 @@ const SecondStep = () => {
    }
 
    const handleSubmitPayment = async () => {
-      if (departureTicket && userInfo) {
+      if (departureTicket) {
          const data: IBill = {
-            passengerEmail: userInfo?.email,
-            passengerName: userInfo?.fullname,
-            passengerPhone: userInfo?.phoneNumber,
+            passengerEmail: userInfo?.email || '',
+            passengerName: userInfo?.fullname || '',
+            passengerPhone: userInfo?.phoneNumber || '',
             trip: {
                seats: departureTicket?.seats.map((s) => s.name),
                tripId: departureTicket?.ticketId,
@@ -58,7 +56,6 @@ const SecondStep = () => {
          }
 
          const url = await createPaymentURL(data)
-         
       }
    }
 
