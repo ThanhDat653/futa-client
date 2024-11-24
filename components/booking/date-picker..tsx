@@ -13,41 +13,62 @@ import {
    PopoverContent,
    PopoverTrigger,
 } from '@/components/ui/popover'
+import { ControllerRenderProps } from 'react-hook-form'
+import { FormControl, FormItem } from '../ui/form'
+import { BookingFormData } from '@/model/booking'
 
-interface IPickerProps {
+interface IPickerProps<TFieldName extends keyof BookingFormData> {
    label: string
-   date: Date
-   handleSelect: (date?: Date) => void
+   field: ControllerRenderProps<BookingFormData, TFieldName> // Field từ React Hook Form
+   error?: string
 }
 
-export function DatePicker({ label, date, handleSelect }: IPickerProps) {
+export function DatePicker<TFieldName extends keyof BookingFormData>({
+   label,
+   error,
+   field,
+}: IPickerProps<TFieldName>) {
+   console.log(field.value)
+
    return (
-      <div className="flex w-full flex-col items-start justify-start gap-1">
+      <FormItem className="flex w-full flex-col items-start justify-start gap-1">
          <span className="text-sm">{label}</span>
          <Popover>
             <PopoverTrigger asChild>
-               <Button
-                  variant={'outline'}
-                  className={cn(
-                     'w-full min-w-[180px] justify-start text-left font-normal',
-                     !date && 'text-muted-foreground'
-                  )}
-               >
-                  <CalendarIcon className="size-4" />
-                  {date ? formatDate(date.toString()) : <span>{label}</span>}
-               </Button>
+               <FormControl>
+                  <Button
+                     variant={'outline'}
+                     className={cn(
+                        'w-full min-w-[180px] justify-start text-left font-normal',
+                        !field.value && 'text-muted-foreground',
+                        { 'border-red-500': error }
+                     )}
+                  >
+                     <CalendarIcon className="size-4" />
+                     {field.value ? (
+                        formatDate(field.value.toString())
+                     ) : (
+                        <span>Chọn ngày</span>
+                     )}
+                  </Button>
+               </FormControl>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0">
                <Calendar
                   mode="single"
-                  selected={date}
-                  // onSelect={handleSelect}
-                  onDayClick={handleSelect}
+                  selected={field.value ? new Date(field.value) : undefined}
+                  onSelect={(date) => field.onChange(date)} // Cập nhật form
                   initialFocus
-                  disabled={(Date) => isBefore(Date, startOfToday())}
+                  disabled={(date) => isBefore(date, startOfToday())}
                />
             </PopoverContent>
          </Popover>
-      </div>
+         {error && (
+            <p className="text-xs text-red-500">
+               <span className="">(*) </span>
+               {error}
+            </p>
+         )}
+      </FormItem>
    )
 }
