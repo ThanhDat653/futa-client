@@ -34,9 +34,12 @@ export async function createPaymentURL(data: IBill) {
       console.error('Error during create payment:', error)
       throw error
    }
+}
+
+
 export const getBillsByCurrUser = async (): Promise<IBillResponse[]> => {
    const token = cookies().get('access_token')?.value
-   const url = `${process.env.NEXT_PUBLIC_FUTA_API_URL}/${END_POINTS.BILL.URL}`
+   const url = `${process.env.NEXT_PUBLIC_FUTA_API_URL}/${END_POINTS.BILL.ALL}`
    const res = await fetch(url, {
       method: 'GET',
       headers: {

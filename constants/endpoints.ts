@@ -27,9 +27,6 @@ export const END_POINTS = {
          REGISTER: `register`,
       },
    },
-   BILL: {
-      URL: `bills`,
-   },
    AUTH: {
       LOGOUT: `logout`,
       TOKEN: `oauth2/token`,

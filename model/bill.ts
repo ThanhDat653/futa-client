@@ -1,15 +1,15 @@
 export interface IBill {
-   roundTrip?: {
-      tripId: string
-      seats: string[]
-   }
-   passengerName: string
-   passengerPhone: string
-   passengerEmail: string
-   trip: {
-      tripId: string
-      seats: string[]
-   }
+    roundTrip?: {
+        tripId: string
+        seats: string[]
+    }
+    passengerName: string
+    passengerPhone: string
+    passengerEmail: string
+    trip: {
+        tripId: string
+        seats: string[]
+    }
 }
 
 export interface IBillResponse {
