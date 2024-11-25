@@ -20,7 +20,7 @@ export const departureTime: IDepartureTime[] = [
       name: '18:00 - 24:00',
    },
    {
-      id: 'night',
+      id: 'midnight',
       name: '00:00 - 06:00',
    },
 ]

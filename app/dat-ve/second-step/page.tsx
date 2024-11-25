@@ -19,8 +19,8 @@ import {
 import { IBill } from '@/model/bill'
 import { createPaymentURL } from '@/service/bill'
 import { getUserInfo } from '@/service/profile'
-import {  useSearchParams } from 'next/navigation'
-import React, { useState } from 'react'
+import { useSearchParams } from 'next/navigation'
+import React, { useEffect, useState } from 'react'
 import useSWR from 'swr'
 
 const SecondStep = () => {
@@ -58,6 +58,10 @@ const SecondStep = () => {
          const url = await createPaymentURL(data)
       }
    }
+
+   useEffect(() => {
+      window.scrollTo(0, 0)
+   }, [])
 
    return (
       <div className="w-full">

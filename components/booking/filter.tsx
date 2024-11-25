@@ -11,22 +11,19 @@ const Filter = ({ data }: { data: IVehicle[] }) => {
    const router = useRouter()
    const searchParams = useSearchParams()
    const params = {
-      timeInDay: searchParams.get('timeInDay') || '',
-      floorNo: searchParams.get('floorNo') || '',
-      vehicleType: searchParams.get('vehicleType') || '',
+      timeInDay: searchParams.get('timeInDay'),
+      floorNo: searchParams.get('floorNo'),
+      vehicleType: searchParams.get('vehicleType'),
    }
    const { floorNo, timeInDay, vehicleType } = params
 
-   const filterParams = new URLSearchParams(searchParams.toString())
-
-   const removeFilter = () => {
+   const removeFilter = useCallback(() => {
+      const filterParams = new URLSearchParams(searchParams.toString())
       filterParams.delete('timeInDay')
       filterParams.delete('vehicleType')
       filterParams.delete('floorNo')
-
-      router.push(`?${filterParams.toString()}`)
-   }
-
+      router.replace(`?${filterParams.toString()}`)
+   }, [searchParams, router])
    return (
       <aside className="col-span-1 hidden h-fit flex-col items-start justify-start rounded-lg bg-white shadow-md lg:flex">
          <div className="flex w-full items-center justify-between px-5 pt-5">
@@ -57,7 +54,6 @@ const Filter = ({ data }: { data: IVehicle[] }) => {
          </div>
          <FilterGroup
             title="Giờ đi"
-            setSelectedOption={() => {}}
             options={departureTime}
             selectedOptions={timeInDay}
             key="timeInDay"
@@ -66,7 +62,6 @@ const Filter = ({ data }: { data: IVehicle[] }) => {
 
          <FilterGroup
             title="Loại xe"
-            setSelectedOption={() => {}}
             options={data}
             selectedOptions={vehicleType}
             key="vehicleType"
@@ -75,7 +70,6 @@ const Filter = ({ data }: { data: IVehicle[] }) => {
 
          <FilterGroup
             title="Tầng"
-            setSelectedOption={() => {}}
             options={floor}
             selectedOptions={floorNo}
             key="floor"

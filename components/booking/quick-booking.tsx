@@ -2,40 +2,22 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
-import React, { ChangeEvent, memo, useState } from 'react'
+import React, { memo, useState } from 'react'
 import SelectLocation from './select-location'
-import { IRegion } from '@/model/region'
 import TripTypeSelector from './trip-type-selector.'
 import { DatePicker } from './date-picker.'
-import { Label } from '../ui/label'
 import { Input } from '../ui/input'
 import { cn, formatDate, parseDateFromParams } from '@/lib/utils'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { RegionProvider, useRegions } from '@/context/region-context'
+import { useRegions } from '@/context/region-context'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { BookingFormData } from '@/model/booking'
 import { bookingSchema } from '@/actions/bookingSchema'
 import { z } from 'zod'
 import { Form, FormControl, FormField, FormItem, FormLabel } from '../ui/form'
-import { Popover } from '@radix-ui/react-popover'
-import { PopoverContent, PopoverTrigger } from '../ui/popover'
-import { Button } from '../ui/button'
-import { CalendarIcon } from 'lucide-react'
-import { Calendar } from '../ui/calendar'
-import { isBefore, startOfToday } from 'date-fns'
-import {
-   Select,
-   SelectContent,
-   SelectGroup,
-   SelectItem,
-   SelectLabel,
-   SelectTrigger,
-   SelectValue,
-} from '../ui/select'
-export type TTripType = 'oneWay' | 'roundTrip'
 
-type BookingFormInputs = z.infer<typeof bookingSchema>
+export type TTripType = 'oneWay' | 'roundTrip'
 
 // Lấy các query từ URL
 const QuickBooking = () => {
@@ -43,23 +25,9 @@ const QuickBooking = () => {
    const searchParams = useSearchParams()
    const { regions, isLoading } = useRegions()
 
-   // // State lưu trữ thông tin form
    const [tripType, setTripType] = useState<TTripType>(
       (searchParams.get('type') as TTripType) || 'oneWay'
    )
-   // const [departure, setDeparture] = useState<string>(
-   //    searchParams.get('from') || ''
-   // )
-   // const [destination, setDestination] = useState(searchParams.get('to') || '')
-   // const [fromTimeState, setFromTimeState] = useState<Date>(
-   //    parseDateFromParams(searchParams.get('fromTime')) ?? new Date()
-   // )
-   // const [toTimeState, setToTimeState] = useState<Date>(
-   //    parseDateFromParams(searchParams.get('toTime')) ?? new Date()
-   // )
-   // const [quantity, setQuantity] = useState<number>(
-   //    Number(searchParams.get('ticketCount')) || 1
-   // )
 
    const {
       register,
@@ -85,22 +53,13 @@ const QuickBooking = () => {
       setTripType(type)
    }
 
-   // const handleSelectDeparture = (d: string) => {
-   //    setDeparture(d)
-   // }
+   const swapLocations = () => {
+      const from = form.getValues('from')
+      const to = form.getValues('to')
 
-   // const handleSelectDestination = (d: string) => {
-   //    setDestination(d)
-   // }
-
-   // const handleSelectDepartureTime = (d: Date) => {
-   //    setFromTimeState(d)
-   // }
-
-   // const swapLocations = () => {
-   //    setDeparture(destination)
-   //    setDestination(departure)
-   // }
+      form.setValue('from', to)
+      form.setValue('to', from)
+   }
 
    // Hàm xử lý khi bấm nút "Tìm chuyến xe"
    function onSubmit(data: z.infer<typeof bookingSchema>) {
@@ -196,7 +155,8 @@ const QuickBooking = () => {
                         <button
                            className="mt-4 hidden md:block"
                            title="Đảo ngược điểm đi và điểm đến"
-                           // onClick={swapLocations}
+                           onClick={swapLocations}
+                           type="button"
                         >
                            <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -231,7 +191,8 @@ const QuickBooking = () => {
                         <button
                            className="ml-1 sm:ml-2"
                            title="Đảo ngược điểm đi và điểm đến"
-                           // onClick={swapLocations}
+                           onClick={swapLocations}
+                           type="button"
                         >
                            <svg
                               xmlns="http://www.w3.org/2000/svg"
