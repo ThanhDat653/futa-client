@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import {IBillResponse} from "@/model/bill";
 
 interface BookingCardProps {
-   bills: IBillResponse[]
+   bills: IBillResponse[];
 }
 
 const BillList = ({bills}: BookingCardProps) => {
@@ -42,11 +42,11 @@ const BillList = ({bills}: BookingCardProps) => {
                         <div className="flex items-center gap-2 text-sm text-slate-600 ps-2">
                            {/*<CalendarIcon className="h-4 w-4" />*/}
                            {item.type === 'Khứ hồi' ? (
-                              item.roundTrip?.trip && (
+                              item.trip.returnTime && (
                                  <>
                                     <span>Ngày đi: {item.trip.startTime.split('T')[0]}</span>
                                     <span>-</span>
-                                    <span>Ngày về: {item.roundTrip.trip.startTime.split('T')[0]}</span>
+                                    <span>Ngày về: {item.trip.returnTime.split('T')[0]}</span>
                                  </>
                               )
                            ) : (

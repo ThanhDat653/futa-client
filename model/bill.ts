@@ -15,7 +15,7 @@ export interface IBill {
 export interface IBillResponse {
     id: string;
     createDate: string;
-    paymentAt: string;
+    paymentAt: string | null;
     expireAt: string;
     totalPrice: number;
     paymentUrl: string;
@@ -25,29 +25,19 @@ export interface IBillResponse {
     passengerName: string;
     passengerPhone: string;
     passengerEmail: string;
-    tickets: ITicketDto[];
     status: IBillStatusDto;
     type: string;
     trip: ITripDto;
-    roundTrip: IBillResponse | null;
 }
 
-interface ITicketDto {
-    id: string;
-    seatName: string;
-    price: number;
-}
-
-interface IBillStatusDto {
+export interface IBillStatusDto {
     name: "Success" | "Pending" | "Cancel";
 }
 
-interface ITripDto {
+export interface ITripDto {
     id: string;
     startTime: string;
-    endTime: string;
-    startAt: string;
-    endAt: string;
+    returnTime: string;
     regionFromName: string;
     regionToName: string;
     locationFromName: string;

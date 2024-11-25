@@ -1,7 +1,7 @@
 import React from 'react'
-import Profile from '@/app/tai-khoan/thong-tin/page'
+import Profile from '@/app/tai-khoan/thong-tin/profile'
 import { getUserInfo } from '@/service/profile'
-import BillList from '@/app/tai-khoan/hoa-don/page'
+import BillList from '@/app/tai-khoan/hoa-don/bill-list'
 import { getBillsByCurrUser } from '@/service/bill'
 
 const Page = async () => {

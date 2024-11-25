@@ -1,12 +1,12 @@
+"use server"
 import { END_POINTS } from '@/constants/endpoints'
 import { notFound } from 'next/navigation'
 import { IProfile, IRegister } from '@/model/profile'
 import {cookies} from "next/headers";
 
 async function getUserInfo() {
-   // const token = getCookieValue('access_token')
+   // const token = Cookies.get('access_token')
    const token = cookies().get("access_token")?.value
-   console.log('Token:' + token)
    const url = `${process.env.NEXT_PUBLIC_FUTA_API_URL}/${END_POINTS.PROFILE.URl}/${END_POINTS.PROFILE.CHILD.INFO}`
    const res = await fetch(url, {
       method: 'GET',
