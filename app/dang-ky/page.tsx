@@ -1,4 +1,4 @@
-'use client'
+"use client"
 import React, {useState} from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Comfortaa } from 'next/font/google'
@@ -9,6 +9,7 @@ import { CheckCircleIcon } from "lucide-react";
 import Link from "next/link";
 import {registerUser} from "@/service/profile";
 import {END_POINTS} from "@/constants/endpoints";
+import useDisableScroll from "@/hooks/use-disable-scroll";
 
 interface FormValues {
    email: string
@@ -29,80 +30,89 @@ const Page = () => {
       formState: { errors },
    } = useForm<FormValues>()
 
-   const [submitted, setSubmitted] = useState(false);
+   const [submitted, setSubmitted] = useState(false)
 
    const googleUrl: string = `${process.env.NEXT_PUBLIC_AUTH_FUTA_API_URL}/${END_POINTS.AUTH.GOOGLE}`
 
    const onSubmit: SubmitHandler<FormValues> = async (data: IRegister) => {
       try {
          if (typeof window !== 'undefined') {
-            console.log(data);
-            await registerUser(data);
-            setSubmitted(true);
+            console.log(data)
+            await registerUser(data)
+            setSubmitted(true)
          }
       } catch (error) {
-         if (error instanceof Error && error.message === 'Email đã được sử dụng') {
-            console.error('Lỗi đăng ký: ', error.message);
+         if (
+            error instanceof Error &&
+            error.message === 'Email đã được sử dụng'
+         ) {
+            console.error('Lỗi đăng ký: ', error.message)
             setError('email', {
                type: 'conflict',
                message: 'Email đã được sử dụng', // Thông báo lỗi sẽ được hiển thị gần trường email
-            });
+            })
          } else {
-            console.error('Lỗi đăng ký không xác định:', error);
-            alert('Đã có lỗi xảy ra, vui lòng thử lại sau.');
+            console.error('Lỗi đăng ký không xác định:', error)
+            alert('Đã có lỗi xảy ra, vui lòng thử lại sau.')
          }
       }
-   };
-
-
-   if(submitted) {
-      return (
-          <div className="flex flex-col items-center justify-start h-screen bg-loginBackground w-full relative">
-             <div className="flex flex-col justify-center items-center w-3/4 sm:w-1/3 space-y-4 top-1/4 absolute">
-                <CheckCircleIcon className="size-20 text-sky-500" />
-                <p className={cn("text-center font-comfortaa font-bold text-primary text-xl", comfortaa.className)}>Đăng ký thành công!</p>
-                <p className="text-center font-comfortaa text-label text-[14px]">
-                   Cảm ơn bạn đã đăng ký tài khoản.
-                   Hãy kiểm tra email và tiến hành xác minh tài khoản để có thể sử dụng những dịch vụ của chúng mình nhé!
-                </p>
-                <Link className="text-[15px] w-[160px] horizontal-line rounded-3xl font-inter font-semibold bg-sky-500 py-3 text-white text-center" href={'/'}>Trang chủ</Link>
-             </div>
-          </div>
-      );
    }
 
+   useDisableScroll(true)
+
+   if (submitted) {
+      return (
+         <div className="bg-loginBackground relative flex h-screen w-full flex-col items-center justify-start">
+            <div className="absolute top-1/4 flex w-3/4 flex-col items-center justify-center space-y-4 sm:w-1/3">
+               <CheckCircleIcon className="size-20 text-sky-500" />
+               <p
+                  className={cn(
+                     'text-primary text-center font-comfortaa text-xl font-bold',
+                     comfortaa.className
+                  )}
+               >
+                  Đăng ký thành công!
+               </p>
+               <p className="text-label text-center font-comfortaa text-[14px]">
+                  Cảm ơn bạn đã đăng ký tài khoản. Hãy kiểm tra email và tiến
+                  hành xác minh tài khoản để có thể sử dụng những dịch vụ của
+                  chúng mình nhé!
+               </p>
+               <Link
+                  className="horizontal-line w-[160px] rounded-3xl bg-sky-500 py-3 text-center font-inter text-[15px] font-semibold text-white"
+                  href={'/'}
+               >
+                  Trang chủ
+               </Link>
+            </div>
+         </div>
+      )
+   }
 
    const passwordValue = watch('password')
+
    return (
-      <div className="flex min-h-screen justify-center py-28">
-         <div className="flex h-fit justify-center rounded-2xl py-10 shadow-2xl w-4/5 sm:w-3/5 lg:w-3/4 2xl:w-[1530px]">
-            <div className="relative mt-5 hidden w-1/2 flex-1 px-8 lg:block">
-               <div
-                  className="text-customBack h-full w-full bg-contain bg-no-repeat"
-                  style={{
-                     backgroundImage:
-                        "url('https://trip.s3-hcm-r1.s3cloud.vn/landing/TVC.svg')",
-                  }}
-               ></div>
-               <p className="absolute left-14 top-0 pe-20 text-2xl font-bold uppercase text-sky-300">
-                  Cùng bạn trên mọi nẻo đường
-               </p>
-            </div>
+      <div className="fixed z-20 flex h-full w-full justify-center overflow-y-scroll bg-sky-600 py-5">
+         <div className="flex bg-white h-fit w-4/5 justify-center rounded-2xl pt-2 pb-10 shadow-2xl sm:w-3/5 lg:w-2/5 2xl:w-[750px]">
              <div
                  className={cn(
-                     'h-5/6 w-full px-10 lg:w-1/2',
+                     'h-5/6 w-full px-10',
                      comfortaa.className
                  )}
              >
+                 <Link href={'/'} className="flex w-full flex-col items-center justify-center">
+                     {/* eslint-disable-next-line @next/next/no-img-element */}
+                     <img src="/logo_banner.svg" alt="" className="h-16"/>
+                 </Link>
                  <div className="flex w-full flex-col items-center justify-center">
-                     <p className="text-[16px] font-bold text-sky-300">Welcome</p>
+                     <p className="text-[16px] sm:text-[28px] font-bold text-sky-300">Welcome</p>
                      <h1 className="text-label text-center font-inter text-[16px] font-bold sm:text-[28px]">
                          TO TRIP BOOKING
                      </h1>
                  </div>
                  <form
                      onSubmit={handleSubmit(onSubmit)}
-                     className="mt-6 flex w-full flex-col items-center justify-center"
+                     className="flex w-full flex-col items-center justify-center"
                  >
                      {/* Email Field */}
                      <div className="mt-4 w-full">
@@ -236,17 +246,21 @@ const Page = () => {
                          </label>
                      </div>
                  </form>
-                 <div className="w-full flex justify-center items-center space-x-3">
-                     <div className="w-full h-[1px] bg-gray-400"></div>
-                     <label className="block text-[16px] text-label font-inter uppercase">hoặc </label>
-                     <div className="w-full h-[1px] bg-gray-400"></div>
+                 <div className="flex w-full items-center justify-center space-x-3">
+                     <div className="h-[1px] w-full bg-gray-400"></div>
+                     <label className="text-label block font-inter text-[16px] uppercase">
+                         hoặc{' '}
+                     </label>
+                     <div className="h-[1px] w-full bg-gray-400"></div>
                  </div>
-                 <div className="w-full mt-4 flex-col justify-center text-center columns-1 space-y-2 ">
-                     <Link href={googleUrl}
-                           className="relative px-0 sm:px-5 py-2 inline-flex justify-center items-center border-gray-200 border hover:bg-gray-200 text-sm sm:text-[15px] w-[200px] sm:w-[250px] rounded-3xl font-inter">
-                         <div className="bg-cover w-5 h-5 bg-center absolute left-3">
+                 <div className="mt-4 w-full columns-1 flex-col justify-center space-y-2 text-center">
+                     <Link
+                         href={googleUrl}
+                         className="relative inline-flex w-[200px] items-center justify-center rounded-3xl border border-gray-200 px-0 py-2 font-inter text-sm hover:bg-gray-200 sm:w-[250px] sm:px-5 sm:text-[15px]"
+                     >
+                         <div className="absolute left-3 h-5 w-5 bg-cover bg-center">
                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                             <img src={"/IconGoogle.png"} alt={"google-logo"}/>
+                             <img src={'/IconGoogle.png'} alt={'google-logo'}/>
                          </div>
                          <p>Tiếp tục với Google</p>
                      </Link>
