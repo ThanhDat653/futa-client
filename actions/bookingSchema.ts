@@ -15,22 +15,23 @@ export const bookingSchema = z
       fromDate: z.date({
          required_error: 'Vui lòng chọn ngày đi.',
       }),
-      toDate: z.date({
-         required_error: 'Vui lòng chọn ngày khứ hồi.',
-      }),
+      toDate: z.date().optional(),
       ticketCount: z
          .number({
             required_error: 'Vui lòng nhập số vé.',
          })
          .min(1, { message: 'Số vé phải lớn hơn hoặc bằng 1.' })
          .max(10, { message: 'Không thể đặt quá 10 vé.' }),
+      typeTrip: z.enum(['oneWay', 'roundTrip']),
    })
    .superRefine((data, ctx) => {
-      if (data.toDate < data.fromDate) {
-         ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: 'Ngày khứ hồi không được sớm hơn ngày đi.',
-            path: ['toDate'], // Đánh dấu lỗi trên `toDate`
-         })
+      if (data.typeTrip === 'roundTrip' && data.toDate) {
+         if (data.toDate < data.fromDate) {
+            ctx.addIssue({
+               code: z.ZodIssueCode.custom,
+               message: 'Ngày khứ hồi không được sớm hơn ngày đi.',
+               path: ['toDate'], // Đánh dấu lỗi trên `toDate`
+            })
+         }
       }
    })

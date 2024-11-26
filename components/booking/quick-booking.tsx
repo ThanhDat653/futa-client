@@ -2,12 +2,11 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
-import React, { memo, useState } from 'react'
+import React, { memo } from 'react'
 import SelectLocation from './select-location'
-import TripTypeSelector from './trip-type-selector.'
 import { DatePicker } from './date-picker.'
 import { Input } from '../ui/input'
-import { cn, formatDate, parseDateFromParams } from '@/lib/utils'
+import { formatDate, parseDateFromParams } from '@/lib/utils'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useRegions } from '@/context/region-context'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -16,6 +15,7 @@ import { BookingFormData } from '@/model/booking'
 import { bookingSchema } from '@/actions/bookingSchema'
 import { z } from 'zod'
 import { Form, FormControl, FormField, FormItem, FormLabel } from '../ui/form'
+import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
 
 export type TTripType = 'oneWay' | 'roundTrip'
 
@@ -24,10 +24,6 @@ const QuickBooking = () => {
    const router = useRouter()
    const searchParams = useSearchParams()
    const { regions, isLoading } = useRegions()
-
-   const [tripType, setTripType] = useState<TTripType>(
-      (searchParams.get('type') as TTripType) || 'oneWay'
-   )
 
    const {
       register,
@@ -46,12 +42,13 @@ const QuickBooking = () => {
          ticketCount: Number(searchParams.get('ticketCount')) || 1,
          to: searchParams.get('to') || '',
          toDate: parseDateFromParams(searchParams.get('toTime')) ?? new Date(),
+         typeTrip: searchParams.get('typeTrip') as TTripType | 'oneWay',
       },
    })
 
-   const handleSelectTripType = (type: TTripType) => {
-      setTripType(type)
-   }
+   // const handleSelectTripType = (type: TTripType) => {
+   //    setTripType(type)
+   // }
 
    const swapLocations = () => {
       const from = form.getValues('from')
@@ -69,12 +66,14 @@ const QuickBooking = () => {
          to: data.to,
          toTime: formatDate(String(data.toDate)),
          ticketCount: String(data.ticketCount),
-         type: tripType,
+         typeTrip: data.typeTrip,
       }
       const searchParams = new URLSearchParams(query).toString()
       const newUrl = `/dat-ve?${searchParams}`
       router.replace(newUrl)
    }
+
+   const tripType = form.watch('typeTrip')
 
    return (
       <div className="w-full px-2 py-10">
@@ -87,10 +86,40 @@ const QuickBooking = () => {
                   onSubmit={form.handleSubmit(onSubmit)}
                   className="relative flex w-full flex-col"
                >
-                  <TripTypeSelector
-                     tripType={tripType}
-                     setTripType={handleSelectTripType}
-                  />
+                  <div className="w-full border-b px-5 md:px-10">
+                     <FormField
+                        control={form.control}
+                        name="typeTrip"
+                        render={({ field }) => (
+                           <FormItem className="space-y-3">
+                              <FormControl>
+                                 <RadioGroup
+                                    onValueChange={field.onChange}
+                                    value={field.value}
+                                    className="flex pb-4"
+                                 >
+                                    <FormItem className="flex items-center space-x-3 space-y-0">
+                                       <FormControl>
+                                          <RadioGroupItem value="oneWay" />
+                                       </FormControl>
+                                       <FormLabel className="font-normal">
+                                          Một chiều
+                                       </FormLabel>
+                                    </FormItem>
+                                    <FormItem className="flex items-center space-x-3 space-y-0">
+                                       <FormControl>
+                                          <RadioGroupItem value="roundTrip" />
+                                       </FormControl>
+                                       <FormLabel className="font-normal">
+                                          Khứ hồi
+                                       </FormLabel>
+                                    </FormItem>
+                                 </RadioGroup>
+                              </FormControl>
+                           </FormItem>
+                        )}
+                     />
+                  </div>
                   <div className="flex h-full w-full items-center gap-2 border-b px-5 py-4 md:px-10">
                      <div className="flex h-[112px] flex-col items-center justify-between py-4 md:hidden">
                         <svg
