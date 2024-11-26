@@ -32,7 +32,7 @@ const TripList = () => {
       timeInDay: searchParams.get('timeInDay') || '',
       floorNo: searchParams.get('floorNo') || '',
       vehicleType: searchParams.get('vehicleType') || '',
-      type: searchParams.get('type') || '',
+      type: searchParams.get('typeTrip') || '',
    }
 
    const { currentTripType, handleSelectTripType } = useBooking()

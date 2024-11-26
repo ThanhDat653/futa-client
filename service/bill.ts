@@ -36,7 +36,6 @@ export async function createPaymentURL(data: IBill) {
    }
 }
 
-
 export const getBillsByCurrUser = async (): Promise<IBillResponse[]> => {
    const token = cookies().get('access_token')?.value
    const url = `${process.env.NEXT_PUBLIC_FUTA_API_URL}/${END_POINTS.BILL.ALL}`
@@ -47,5 +46,7 @@ export const getBillsByCurrUser = async (): Promise<IBillResponse[]> => {
       },
    })
    const result = await res.json()
+   console.log(result.data)
+
    return result.data
 }

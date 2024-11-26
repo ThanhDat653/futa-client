@@ -4,13 +4,12 @@ import { IFloor } from '@/model/seat'
 import { IDepartureTime } from '@/model/trips'
 import { IVehicle } from '@/model/vehicle'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { memo, useEffect, useState } from 'react'
 
 interface IFilterGroupProps {
    title: string
    options: IVehicle[] | IFloor[] | IDepartureTime[]
-   selectedOptions: string
-   setSelectedOption?: (id: number | string) => void
+   selectedOptions: string | null
    paramName: string
 }
 
@@ -18,6 +17,7 @@ const FilterGroup: React.FC<IFilterGroupProps> = ({
    title,
    options,
    selectedOptions,
+
    paramName,
 }) => {
    const router = useRouter()
@@ -28,11 +28,12 @@ const FilterGroup: React.FC<IFilterGroupProps> = ({
 
    useEffect(() => {
       const params = new URLSearchParams(searchParams.toString())
-      if (currentOptions.length > 0) {
+      if (currentOptions.length) {
          params.set(paramName, currentOptions?.join('-'))
       } else {
          params.delete(paramName)
       }
+
       router.push(`?${params.toString()}`)
    }, [router, searchParams, currentOptions, paramName])
 
@@ -43,7 +44,6 @@ const FilterGroup: React.FC<IFilterGroupProps> = ({
             : [...prev, opt]
       )
    }
-
    return (
       <div className="flex w-full flex-col gap-4 border-b p-5">
          <h3 className="font-medium text-gray-800">{title}</h3>
@@ -51,9 +51,10 @@ const FilterGroup: React.FC<IFilterGroupProps> = ({
             {options?.map((option) => (
                <div className="flex items-center space-x-2" key={option.id}>
                   <button
+                     type="button"
                      onClick={() => toggleOption(option.id.toString())}
                      className={`box-border rounded-lg border-2 px-3 py-1 text-sm shadow-sm transition-all duration-200 ${
-                        currentOptions?.includes(option.id.toString())
+                        selectedOptions?.includes(option.id.toString())
                            ? 'border-sky-600 bg-sky-100 text-sky-800'
                            : 'border-gray-200 bg-gray-50 text-gray-800'
                      } lg:hover:border-sky-600 lg:hover:bg-sky-100 lg:hover:text-sky-800`}
@@ -67,4 +68,4 @@ const FilterGroup: React.FC<IFilterGroupProps> = ({
    )
 }
 
-export default FilterGroup
+export default memo(FilterGroup)

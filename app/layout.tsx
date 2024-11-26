@@ -11,6 +11,7 @@ const roboto = Roboto({
    subsets: ['latin'],
    display: 'swap',
 })
+import { TailwindIndicator } from '@/components/tailwind-indicator'
 
 export const metadata = {
    title: 'Next.js',

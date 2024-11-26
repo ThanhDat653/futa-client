@@ -2,64 +2,28 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
-import React, { ChangeEvent, memo, useState } from 'react'
+import React, { memo } from 'react'
 import SelectLocation from './select-location'
-import { IRegion } from '@/model/region'
-import TripTypeSelector from './trip-type-selector.'
 import { DatePicker } from './date-picker.'
-import { Label } from '../ui/label'
 import { Input } from '../ui/input'
-import { cn, formatDate, parseDateFromParams } from '@/lib/utils'
+import { formatDate, parseDateFromParams } from '@/lib/utils'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { RegionProvider, useRegions } from '@/context/region-context'
+import { useRegions } from '@/context/region-context'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { BookingFormData } from '@/model/booking'
 import { bookingSchema } from '@/actions/bookingSchema'
 import { z } from 'zod'
 import { Form, FormControl, FormField, FormItem, FormLabel } from '../ui/form'
-import { Popover } from '@radix-ui/react-popover'
-import { PopoverContent, PopoverTrigger } from '../ui/popover'
-import { Button } from '../ui/button'
-import { CalendarIcon } from 'lucide-react'
-import { Calendar } from '../ui/calendar'
-import { isBefore, startOfToday } from 'date-fns'
-import {
-   Select,
-   SelectContent,
-   SelectGroup,
-   SelectItem,
-   SelectLabel,
-   SelectTrigger,
-   SelectValue,
-} from '../ui/select'
-export type TTripType = 'oneWay' | 'roundTrip'
+import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
 
-type BookingFormInputs = z.infer<typeof bookingSchema>
+export type TTripType = 'oneWay' | 'roundTrip'
 
 // Lấy các query từ URL
 const QuickBooking = () => {
    const router = useRouter()
    const searchParams = useSearchParams()
    const { regions, isLoading } = useRegions()
-
-   // // State lưu trữ thông tin form
-   const [tripType, setTripType] = useState<TTripType>(
-      (searchParams.get('type') as TTripType) || 'oneWay'
-   )
-   // const [departure, setDeparture] = useState<string>(
-   //    searchParams.get('from') || ''
-   // )
-   // const [destination, setDestination] = useState(searchParams.get('to') || '')
-   // const [fromTimeState, setFromTimeState] = useState<Date>(
-   //    parseDateFromParams(searchParams.get('fromTime')) ?? new Date()
-   // )
-   // const [toTimeState, setToTimeState] = useState<Date>(
-   //    parseDateFromParams(searchParams.get('toTime')) ?? new Date()
-   // )
-   // const [quantity, setQuantity] = useState<number>(
-   //    Number(searchParams.get('ticketCount')) || 1
-   // )
 
    const {
       register,
@@ -78,29 +42,21 @@ const QuickBooking = () => {
          ticketCount: Number(searchParams.get('ticketCount')) || 1,
          to: searchParams.get('to') || '',
          toDate: parseDateFromParams(searchParams.get('toTime')) ?? new Date(),
+         typeTrip: searchParams.get('typeTrip') as TTripType | 'oneWay',
       },
    })
 
-   const handleSelectTripType = (type: TTripType) => {
-      setTripType(type)
+   // const handleSelectTripType = (type: TTripType) => {
+   //    setTripType(type)
+   // }
+
+   const swapLocations = () => {
+      const from = form.getValues('from')
+      const to = form.getValues('to')
+
+      form.setValue('from', to)
+      form.setValue('to', from)
    }
-
-   // const handleSelectDeparture = (d: string) => {
-   //    setDeparture(d)
-   // }
-
-   // const handleSelectDestination = (d: string) => {
-   //    setDestination(d)
-   // }
-
-   // const handleSelectDepartureTime = (d: Date) => {
-   //    setFromTimeState(d)
-   // }
-
-   // const swapLocations = () => {
-   //    setDeparture(destination)
-   //    setDestination(departure)
-   // }
 
    // Hàm xử lý khi bấm nút "Tìm chuyến xe"
    function onSubmit(data: z.infer<typeof bookingSchema>) {
@@ -110,12 +66,14 @@ const QuickBooking = () => {
          to: data.to,
          toTime: formatDate(String(data.toDate)),
          ticketCount: String(data.ticketCount),
-         type: tripType,
+         typeTrip: data.typeTrip,
       }
       const searchParams = new URLSearchParams(query).toString()
       const newUrl = `/dat-ve?${searchParams}`
       router.replace(newUrl)
    }
+
+   const tripType = form.watch('typeTrip')
 
    return (
       <div className="w-full px-2 py-10">
@@ -128,10 +86,40 @@ const QuickBooking = () => {
                   onSubmit={form.handleSubmit(onSubmit)}
                   className="relative flex w-full flex-col"
                >
-                  <TripTypeSelector
-                     tripType={tripType}
-                     setTripType={handleSelectTripType}
-                  />
+                  <div className="w-full border-b px-5 md:px-10">
+                     <FormField
+                        control={form.control}
+                        name="typeTrip"
+                        render={({ field }) => (
+                           <FormItem className="space-y-3">
+                              <FormControl>
+                                 <RadioGroup
+                                    onValueChange={field.onChange}
+                                    value={field.value}
+                                    className="flex pb-4"
+                                 >
+                                    <FormItem className="flex items-center space-x-3 space-y-0">
+                                       <FormControl>
+                                          <RadioGroupItem value="oneWay" />
+                                       </FormControl>
+                                       <FormLabel className="font-normal">
+                                          Một chiều
+                                       </FormLabel>
+                                    </FormItem>
+                                    <FormItem className="flex items-center space-x-3 space-y-0">
+                                       <FormControl>
+                                          <RadioGroupItem value="roundTrip" />
+                                       </FormControl>
+                                       <FormLabel className="font-normal">
+                                          Khứ hồi
+                                       </FormLabel>
+                                    </FormItem>
+                                 </RadioGroup>
+                              </FormControl>
+                           </FormItem>
+                        )}
+                     />
+                  </div>
                   <div className="flex h-full w-full items-center gap-2 border-b px-5 py-4 md:px-10">
                      <div className="flex h-[112px] flex-col items-center justify-between py-4 md:hidden">
                         <svg
@@ -196,7 +184,8 @@ const QuickBooking = () => {
                         <button
                            className="mt-4 hidden md:block"
                            title="Đảo ngược điểm đi và điểm đến"
-                           // onClick={swapLocations}
+                           onClick={swapLocations}
+                           type="button"
                         >
                            <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -231,7 +220,8 @@ const QuickBooking = () => {
                         <button
                            className="ml-1 sm:ml-2"
                            title="Đảo ngược điểm đi và điểm đến"
-                           // onClick={swapLocations}
+                           onClick={swapLocations}
+                           type="button"
                         >
                            <svg
                               xmlns="http://www.w3.org/2000/svg"
