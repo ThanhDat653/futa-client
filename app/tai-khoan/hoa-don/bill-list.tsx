@@ -9,9 +9,11 @@ interface BookingCardProps {
 
 const BillList = ({ bills }: BookingCardProps) => {
    return (
-      <div className="space-y-2 md:w-3/4 md:ps-8">
-         <p className="font-inter text-2xl font-semibold">Lịch sử mua vé</p>
-         <div className="h-[600px] space-y-4 overflow-y-auto">
+      <div className="flex w-full flex-col gap-2 space-y-2 md:w-3/4">
+         <p className="text-lg font-medium text-gray-800 md:text-2xl">
+            Lịch sử mua vé
+         </p>
+         <div className="flex w-full flex-col gap-3">
             {bills?.map((item, key) => <BillCard bill={item} key={key} />)}
          </div>
       </div>
