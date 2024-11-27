@@ -16,16 +16,16 @@ import { MenuIcon } from 'lucide-react'
 import { MAIN_NAVIGATION } from '@/configs/navigation'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { SessionProvider } from "next-auth/react";
-import AuthControl from "@/components/auth/auth-control";
+import { SessionProvider } from 'next-auth/react'
+import AuthControl from '@/components/auth/auth-control'
 
 const Header = () => {
    const pathname = usePathname()
 
    return (
       <header className="fixed left-0 top-0 z-10 box-border flex h-[70px] w-screen flex-col items-start justify-between gap-4 bg-gradient-to-b from-sky-400 to-sky-600 px-4 pt-4 shadow shadow-[rgba(0,0,0,0.15)] lg:h-fit">
-         <div className="container mx-auto flex w-full items-center relative justify-between 2xl:w-[1530px]">
-            <div className="flex items-center lg:hidden ">
+         <div className="container relative mx-auto flex w-full items-center justify-between 2xl:w-[1530px]">
+            <div className="flex items-center lg:hidden">
                <Sheet>
                   <SheetTrigger asChild>
                      <Button
@@ -71,11 +71,19 @@ const Header = () => {
                   </SheetContent>
                </Sheet>
             </div>
-            <Link className="h-full flex-1" href={'/'}>
-               <img src="/logo_banner.svg" alt="" className="h-10 w-full" />
+            <Link
+               className="flex h-full flex-1 items-center justify-center"
+               href={'/'}
+            >
+               <img
+                  src="/logo_banner.svg"
+                  alt=""
+                  className="h-10"
+                  tabIndex={0}
+               />
             </Link>
             <SessionProvider>
-               <AuthControl/>
+               <AuthControl />
             </SessionProvider>
          </div>
          <div className="container mx-auto hidden w-full items-center justify-center lg:flex">

@@ -34,5 +34,6 @@ export const END_POINTS = {
    },
    BILL: {
       ALL: 'bills',
+      SEARCH: 'bills/user/search',
    },
 }
