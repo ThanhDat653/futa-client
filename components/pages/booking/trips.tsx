@@ -199,12 +199,11 @@ const TripCard = ({
                </button>
             </div>
          </div>
-         <div className="flex w-full items-center justify-center md:hidden">
+         <div className="flex w-full items-center justify-center py-1 md:hidden">
             <button
-               disabled={trip.id === current}
+               onClick={handleSelectTrip}
                className={cn(
-                  'mx-auto mt-1 w-full rounded bg-orange-100 py-2 text-orange-600',
-                  trip.id === current && 'bg-sky-100 text-sky-700'
+                  'mx-auto mt-1 w-full rounded bg-sky-500 py-2 text-white'
                )}
             >
                Chọn chuyến
