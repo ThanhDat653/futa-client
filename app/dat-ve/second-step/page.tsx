@@ -41,16 +41,19 @@ const SecondStep = () => {
       `${process.env.NEXT_PUBLIC_FUTA_API_URL}/${END_POINTS.PROFILE.URl}/${END_POINTS.PROFILE.CHILD.INFO}`,
       getUserInfo
    )
+
    const params = {
       type: searchParams.get('typeTrip') as TTripType,
       fromTime: searchParams.get('fromTime') || '',
       toTime: searchParams.get('toTime') || '',
    }
+
    const {
       formState: { errors },
    } = useForm<IProfile>({
       resolver: zodResolver(paymentSchema), // Tích hợp schema validation
    })
+
    const { destinationTicket, departureTicket, step, handleSetStep } =
       useBooking()
    const { from, to } = useSchedule()
@@ -69,22 +72,6 @@ const SecondStep = () => {
       setAccept(!accept)
    }
 
-   const handleSubmitPayment = async () => {
-      if (departureTicket && departureTicket.seats.length > 0) {
-         const data: IBill = {
-            passengerEmail: userInfo?.email || '',
-            passengerName: userInfo?.fullname || '',
-            passengerPhone: userInfo?.phoneNumber || '',
-            trip: {
-               seats: departureTicket?.seats.map((s) => s.name),
-               tripId: departureTicket?.ticketId,
-            },
-         }
-
-         const url = await createPaymentURL(data)
-      }
-   }
-
    const onSubmit = async (data: z.infer<typeof paymentSchema>) => {
       if (params.type === 'oneWay')
          if (departureTicket && departureTicket.seats.length > 0) {
@@ -98,8 +85,31 @@ const SecondStep = () => {
                },
             }
 
-            await createPaymentURL(bill)
+            return await createPaymentURL(bill)
          }
+
+      if (
+         departureTicket &&
+         destinationTicket &&
+         departureTicket.seats.length > 0 &&
+         destinationTicket.seats.length > 0
+      ) {
+         const bill: IBill = {
+            passengerEmail: data?.email,
+            passengerName: data?.fullname,
+            passengerPhone: data?.phoneNumber,
+            trip: {
+               seats: departureTicket?.seats.map((s) => s.name),
+               tripId: departureTicket?.ticketId,
+            },
+            roundTrip: {
+               seats: destinationTicket?.seats.map((s) => s.name),
+               tripId: destinationTicket?.ticketId,
+            },
+         }
+
+         return await createPaymentURL(bill)
+      }
    }
 
    useEffect(() => {

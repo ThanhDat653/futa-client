@@ -52,3 +52,8 @@ export interface ITripDto {
    locationFromName: string
    locationToName: string
 }
+
+export interface IBillSearchData {
+   billId: string
+   phoneNumber: string
+}

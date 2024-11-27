@@ -1,18 +1,19 @@
-import React, {useState} from 'react';
-import {signIn, useSession} from "next-auth/react";
-import {CreditCard, Loader2, LogIn, LogOut, User, UserIcon, UserPlus} from "lucide-react";
+import React, { useState } from 'react'
+import { signIn, useSession } from 'next-auth/react'
+import { Loader2, LogIn, LogOut, User, UserIcon, UserPlus } from 'lucide-react'
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuGroup, DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
+   DropdownMenu,
+   DropdownMenuContent,
+   DropdownMenuGroup,
+   DropdownMenuItem,
+   DropdownMenuLabel,
+   DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
 interface MenuItem {
-    label: string;
-    icon: React.ReactNode;
-    action: () => void;
+   label: string
+   icon: React.ReactNode
+   action: () => void
 }
 
 const AuthControl = () => {
@@ -22,9 +23,9 @@ const AuthControl = () => {
    if (status === 'loading') {
       return <Loader2 className="absolute right-0 animate-spin text-white" />
    }
-   
+
    const redirect = (url: string) => {
-       window.location.href = url
+      window.location.href = url
    }
 
    const menuItems: MenuItem[] = [
@@ -32,11 +33,6 @@ const AuthControl = () => {
          label: 'Thông tin',
          icon: <User />,
          action: () => redirect('/tai-khoan'),
-      },
-      {
-         label: 'Hóa đơn',
-         icon: <CreditCard />,
-         action: () => redirect('/hoa-don'),
       },
       {
          label: 'Đăng xuất',
@@ -54,7 +50,7 @@ const AuthControl = () => {
       {
          label: 'Đăng ký',
          icon: <UserPlus />,
-         action: () => redirect('/dang-ky')
+         action: () => redirect('/dang-ky'),
       },
    ]
 
@@ -70,10 +66,10 @@ const AuthControl = () => {
                   <DropdownMenuGroup>
                      {menuItems.map((item, index) => (
                         <DropdownMenuItem
-                            key={index}
-                            onSelect={() => {
-                                item.action()
-                            }}
+                           key={index}
+                           onSelect={() => {
+                              item.action()
+                           }}
                         >
                            <div
                               className="flex cursor-pointer items-center gap-1"
@@ -88,34 +84,33 @@ const AuthControl = () => {
                </DropdownMenuContent>
             </DropdownMenu>
          ) : (
-             <div className="absolute right-0">
-                 <DropdownMenu open={open} onOpenChange={setOpen}>
-                     <DropdownMenuTrigger className="focus-visible:outline-none">
-                         <UserIcon
-                             className="size-6 cursor-pointer rounded-full bg-white text-sky-500 ring-2 ring-white"/>
-                     </DropdownMenuTrigger>
-                     <DropdownMenuContent className="mt-2 w-36" align={'end'}>
-                         <DropdownMenuGroup>
-                             {logInMenu.map((item, index) => (
-                                 <DropdownMenuItem
-                                     key={index}
-                                     onSelect={() => {
-                                         item.action()
-                                     }}
-                                 >
-                                     <div
-                                         className="flex cursor-pointer items-center gap-1"
-                                         onClick={item.action}
-                                     >
-                                         {item.icon}
-                                         <span>{item.label}</span>
-                                     </div>
-                                 </DropdownMenuItem>
-                             ))}
-                         </DropdownMenuGroup>
-                     </DropdownMenuContent>
-                 </DropdownMenu>
-             </div>
+            <div className="absolute right-0">
+               <DropdownMenu open={open} onOpenChange={setOpen}>
+                  <DropdownMenuTrigger className="focus-visible:outline-none">
+                     <UserIcon className="size-6 cursor-pointer rounded-full bg-white text-sky-500 ring-2 ring-white" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="mt-2 w-36" align={'end'}>
+                     <DropdownMenuGroup>
+                        {logInMenu.map((item, index) => (
+                           <DropdownMenuItem
+                              key={index}
+                              onSelect={() => {
+                                 item.action()
+                              }}
+                           >
+                              <div
+                                 className="flex cursor-pointer items-center gap-1"
+                                 onClick={item.action}
+                              >
+                                 {item.icon}
+                                 <span>{item.label}</span>
+                              </div>
+                           </DropdownMenuItem>
+                        ))}
+                     </DropdownMenuGroup>
+                  </DropdownMenuContent>
+               </DropdownMenu>
+            </div>
          )}
       </>
    )

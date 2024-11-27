@@ -11,7 +11,7 @@ export default async function Page({
 }) {
    const billId = (await params).id
    const bill = await getBillById(billId)
-   console.log(bill.totalPrice)
+   console.log(bill)
 
    return (
       // <div className="mt-[120px] w-full bg-slate-100">
