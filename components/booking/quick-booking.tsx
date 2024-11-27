@@ -42,13 +42,12 @@ const QuickBooking = () => {
          ticketCount: Number(searchParams.get('ticketCount')) || 1,
          to: searchParams.get('to') || '',
          toDate: parseDateFromParams(searchParams.get('toTime')) ?? new Date(),
-         typeTrip: searchParams.get('typeTrip') as TTripType | 'oneWay',
+         typeTrip:
+            searchParams.get('typeTrip') !== null
+               ? (searchParams.get('typeTrip') as TTripType)
+               : 'oneWay',
       },
    })
-
-   // const handleSelectTripType = (type: TTripType) => {
-   //    setTripType(type)
-   // }
 
    const swapLocations = () => {
       const from = form.getValues('from')
@@ -76,29 +75,29 @@ const QuickBooking = () => {
    const tripType = form.watch('typeTrip')
 
    return (
-      <div className="w-full px-2 py-10">
-         <div className="container mx-auto flex flex-col items-start justify-start gap-5 rounded-xl border-2 border-sky-500 pb-10 shadow ring-8 ring-sky-100 lg:gap-10">
+      <div className="mb-2 h-fit w-full px-2 md:py-10">
+         <div className="container mx-auto flex h-fit flex-col items-start justify-start gap-5 rounded-xl border-2 border-sky-500 pb-10 shadow ring-8 ring-sky-100 lg:gap-10">
             <div className="hidden w-full overflow-hidden rounded-xl border-2 border-gray-200 shadow md:block">
                <img src="/banner.png" alt="23 năm vững tin và phát triển" />
             </div>
             <Form {...form}>
                <form
                   onSubmit={form.handleSubmit(onSubmit)}
-                  className="relative flex w-full flex-col"
+                  className="relative flex h-full w-full flex-col"
                >
                   <div className="w-full border-b px-5 md:px-10">
                      <FormField
                         control={form.control}
                         name="typeTrip"
                         render={({ field }) => (
-                           <FormItem className="space-y-3">
+                           <FormItem className="space-y-5">
                               <FormControl>
                                  <RadioGroup
                                     onValueChange={field.onChange}
                                     value={field.value}
-                                    className="flex pb-4"
+                                    className="flex gap-5 py-5 md:pb-4 md:pt-0"
                                  >
-                                    <FormItem className="flex items-center space-x-3 space-y-0">
+                                    <FormItem className="flex items-center space-x-2 space-y-0">
                                        <FormControl>
                                           <RadioGroupItem value="oneWay" />
                                        </FormControl>
@@ -106,7 +105,7 @@ const QuickBooking = () => {
                                           Một chiều
                                        </FormLabel>
                                     </FormItem>
-                                    <FormItem className="flex items-center space-x-3 space-y-0">
+                                    <FormItem className="flex items-center space-x-2 space-y-0">
                                        <FormControl>
                                           <RadioGroupItem value="roundTrip" />
                                        </FormControl>

@@ -48,25 +48,27 @@ const TripList = () => {
             <button
                disabled={currentTripType === 'departure'}
                className={cn(
-                  'flex-1 cursor-pointer border-0 bg-white py-2 text-center text-gray-700',
+                  'flex-1 cursor-pointer border-0 bg-white py-2 text-center text-gray-800',
                   currentTripType === 'departure' && 'border-b-2 border-sky-600'
                )}
                onClick={() => handleSelectTripType('departure')}
             >
-               {`  Chuyến đi - ${params.fromTime} `}
+               <span className="hidden md:inline">Chuyến đi - </span>{' '}
+               {params.fromTime}{' '}
                {currentTripType === 'departure' && `(${totalTrips})`}
             </button>
             {params.type === 'roundTrip' && (
                <button
                   disabled={currentTripType === 'destination'}
                   className={cn(
-                     'flex-1 cursor-pointer border-0 bg-white py-2 text-center text-gray-700',
+                     'flex-1 cursor-pointer border-0 bg-white py-2 text-center text-gray-800',
                      currentTripType === 'destination' &&
                         'border-b-2 border-sky-600'
                   )}
                   onClick={() => handleSelectTripType('destination')}
                >
-                  {`  Chuyến về - ${params.toTime} `}
+                  <span className="hidden md:inline">Chuyến về - </span>{' '}
+                  {params.toTime}{' '}
                   {currentTripType === 'destination' && `(${totalTrips})`}
                </button>
             )}
