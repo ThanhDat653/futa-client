@@ -27,6 +27,7 @@ const Seat = ({ data, tripId }: { data: ISeat; tripId: string }) => {
                   seats?.find((s) => s.id === data.id),
             }
          )}
+         type="button"
          disabled={data.isReserved}
          onClick={() =>
             handleToggleSeat(tripId, data.id, data.name, data.price)

@@ -108,7 +108,7 @@ const TripSummary = () => {
    const { departureTicket, destinationTicket, currentTripType } = useBooking()
    const searchParams = useSearchParams()
    const params = {
-      type: searchParams.get('type') as TTripType,
+      type: searchParams.get('typeTrip') as TTripType,
    }
    return (
       params.type === 'roundTrip' &&
