@@ -26,8 +26,6 @@ const QuickBooking = () => {
    const { regions, isLoading } = useRegions()
 
    const {
-      register,
-      handleSubmit,
       formState: { errors },
    } = useForm<BookingFormData>({
       resolver: zodResolver(bookingSchema), // Tích hợp schema validation
